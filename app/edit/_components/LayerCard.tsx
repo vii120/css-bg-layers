@@ -84,7 +84,7 @@ export function LayerCard({
         </div>
         <button
           onClick={onToggleVisibility}
-          className="text-ink-muted hover:text-ink transition-colors cursor-pointer"
+          className="text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-3"
           aria-label={isVisible ? 'Hide layer' : 'Show layer'}
         >
           {isVisible ? <Eye size={14} /> : <EyeClosed size={14} />}
