@@ -3,6 +3,7 @@
 import { Eye, EyeClosed } from 'lucide-react'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import type { BgLayer } from '@/lib/parseCss'
+import { cn } from '@/lib/utils'
 
 /**
  * Build a self-contained CSS snippet to preview a single layer.
@@ -55,7 +56,7 @@ export function LayerCard({
 
   return (
     <div
-      className={`rounded-md border border-line overflow-hidden bg-canvas transition-opacity ${isVisible ? '' : 'opacity-40'}`}
+      className={cn('rounded-md border border-line overflow-hidden bg-canvas transition-opacity', !isVisible && 'opacity-40')}
     >
       {/* Header row */}
       <div className="px-3.5 py-2 border-b border-line bg-surface flex items-center justify-between">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { parseCssInput, type BgLayer } from '@/lib/parseCss'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import { LayerCard } from './_components/LayerCard'
@@ -150,7 +151,7 @@ export default function EditPage() {
                   </h2>
                   <ChevronDown
                     size={12}
-                    className={`ml-auto text-ink-muted transition-transform ${varsOpen ? '' : '-rotate-90'}`}
+                    className={cn('ml-auto text-ink-muted transition-transform', !varsOpen && '-rotate-90')}
                   />
                 </button>
                 {varsOpen && (
