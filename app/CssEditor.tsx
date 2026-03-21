@@ -5,23 +5,8 @@ import { EditorView, minimalSetup } from 'codemirror'
 import { placeholder as cmPlaceholder } from '@codemirror/view'
 import { css } from '@codemirror/lang-css'
 import { EditorState } from '@codemirror/state'
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
-import { tags as t } from '@lezer/highlight'
-
-const highlightStyle = HighlightStyle.define([
-  { tag: t.propertyName, color: '#c2410c' },          // terracotta — property names
-  { tag: t.variableName, color: '#0e7490' },           // teal — CSS custom props (--foo)
-  { tag: t.keyword, color: '#7c3aed' },                // violet — at-rules, value keywords
-  { tag: t.function(t.variableName), color: '#2563eb' }, // blue — gradient/var/calc functions
-  { tag: t.number, color: '#d97706' },                 // amber — numbers
-  { tag: t.unit, color: '#b45309' },                   // dark amber — units (px, deg, %)
-  { tag: t.string, color: '#059669' },                 // green — strings
-  { tag: t.url, color: '#059669' },                    // green — url()
-  { tag: t.color, color: '#9333ea' },                  // vivid violet — hex colors
-  { tag: t.comment, color: '#a8a29e', fontStyle: 'italic' },
-  { tag: t.punctuation, color: '#78716c' },
-  { tag: t.operator, color: '#78716c' },
-])
+import { syntaxHighlighting } from '@codemirror/language'
+import { baseEditorTheme, highlightStyle } from '@/lib/cmTheme'
 
 const editorTheme = EditorView.theme({
   '&': {
@@ -29,42 +14,17 @@ const editorTheme = EditorView.theme({
     fontSize: '13px',
     fontFamily: 'var(--font-geist-mono), monospace',
   },
-  '.cm-scroller': {
-    fontFamily: 'inherit',
-    lineHeight: '1.65',
-    overflow: 'auto',
-  },
   '.cm-content': {
     padding: '1rem',
-    caretColor: '#3b52d4',
-  },
-  '.cm-line': {
-    padding: '0',
-  },
-  '.cm-cursor': {
-    borderLeftColor: '#3b52d4',
-    borderLeftWidth: '2px',
-  },
-  '.cm-selectionBackground': {
-    background: 'rgba(59, 82, 212, 0.12) !important',
-  },
-  '&.cm-focused .cm-selectionBackground': {
-    background: 'rgba(59, 82, 212, 0.15) !important',
   },
   '.cm-focused .cm-cursor': {
     borderLeftColor: '#3b52d4',
-  },
-  '.cm-gutters': {
-    display: 'none',
   },
   '.cm-placeholder': {
     color: '#b0a89e',
     fontStyle: 'normal',
   },
-  '&.cm-focused': {
-    outline: 'none',
-  },
-})
+}, { dark: false })
 
 export function CssEditor({
   value,
@@ -88,6 +48,7 @@ export function CssEditor({
     const extensions = [
       minimalSetup,
       css(),
+      baseEditorTheme,
       editorTheme,
       syntaxHighlighting(highlightStyle),
       EditorView.updateListener.of((update) => {

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { reconstructBackground, type BgLayer } from '@/lib/parseCss'
+import { CssViewer } from './CssViewer'
 import {
   Dialog,
   DialogContent,
@@ -70,16 +71,14 @@ export function OutputCss({
         className="max-w-2xl bg-canvas border-line"
       >
         <DialogHeader>
-          <div className="flex items-center justify-between pr-8">
+          <div className="flex items-center gap-3 pr-10">
             <DialogTitle className="text-sm font-semibold uppercase tracking-wider text-ink-muted">
               Output CSS
             </DialogTitle>
             <CopyButton text={outputText} />
           </div>
         </DialogHeader>
-        <pre className="font-mono text-xs leading-relaxed bg-surface rounded-md p-4 overflow-x-auto border border-line text-ink whitespace-pre-wrap max-h-[60vh] overflow-y-auto">
-          {outputText}
-        </pre>
+        <CssViewer code={outputText} />
       </DialogContent>
     </Dialog>
   )
