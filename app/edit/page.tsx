@@ -95,11 +95,11 @@ export default function EditPage() {
   return (
     <main className="md:h-[calc(100dvh-3.5rem)] w-full mx-auto px-8 py-10 flex flex-col-reverse md:flex-row gap-8 bg-canvas text-ink">
       {error && (
-        <div className="text-sm text-ink-muted py-16 text-center">
+        <div className="mx-auto text-sm text-ink-muted py-16 text-center">
           <p>{error}</p>
           <Link
             href="/"
-            className="mt-4 inline-block text-accent underline underline-offset-2"
+            className="mt-4 inline-block underline underline-offset-2"
           >
             Go back
           </Link>

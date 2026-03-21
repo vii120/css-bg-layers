@@ -2,8 +2,7 @@ export const EXAMPLES = [
   {
     id: 'gradient',
     label: 'Prince Of Persia',
-    sourceName: 'MSHR',
-    sourceLink: 'https://www.mshr.app/mesh/1714056175013',
+    source: { name: 'MSHR', url: 'https://www.mshr.app/mesh/1714056175013' },
     css: `div {
   background-color: hsla(65, 60%, 97%, 1);
   background-image:
@@ -17,8 +16,8 @@ export const EXAMPLES = [
   {
     id: 'cubes',
     label: '3D cubes',
-    sourceName: 'CSS Pattern',
-    sourceLink: 'https://css-pattern.com/overlapping-cubes/',
+    source: { name: 'CSS Pattern', url: 'https://css-pattern.com/overlapping-cubes/' },
+    note: 'with CSS variables',
     css: `div {
   --s: 50px;
   --c1: #f1f7ff;
@@ -39,19 +38,16 @@ export const EXAMPLES = [
   {
     id: 'zigzag',
     label: 'ZigZag',
-    sourceName: 'MagicPattern',
-    sourceLink: 'https://www.magicpattern.design/tools/css-backgrounds',
+    source: { name: 'MagicPattern', url: 'https://www.magicpattern.design/tools/css-backgrounds' },
     css: `div {
-  --c: #f4bcaf;
   background-image:
-    linear-gradient(135deg, var(--c) 25%, transparent 25%),
-    linear-gradient(225deg, var(--c) 25%, transparent 25%),
-    linear-gradient(45deg, var(--c) 25%, transparent 25%),
-    linear-gradient(315deg, var(--c) 25%, #ffe6d9 25%);
+    linear-gradient(135deg, #f4bcaf 25%, transparent 25%),
+    linear-gradient(225deg, #f4bcaf 25%, transparent 25%),
+    linear-gradient(45deg, #f4bcaf 25%, transparent 25%),
+    linear-gradient(315deg, #f4bcaf 25%, #ffe6d9 25%);
   background-position: 10px 0, 10px 0, 0 0, 0 0;
   background-size: 20px 20px;
   background-repeat: repeat;
 }`,
-  }
-
+  },
 ]

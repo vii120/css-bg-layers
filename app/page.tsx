@@ -19,15 +19,14 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-canvas text-ink">
       <main className="flex-1 max-w-5xl w-full mx-auto px-8 py-16 space-y-16">
         {/* Intro */}
-        <div>
-          <h1 className="text-[2.5rem] font-semibold tracking-tight leading-[1.1] mb-4">
+        <div className="text-center">
+          <h1 className="text-[2.5rem] font-semibold tracking-tight leading-snug mb-4">
             Layer by layer,
             <br />
             mystery solved.
           </h1>
           <p className="text-lg leading-relaxed text-ink-muted">
-            Split, break down, edit, and visualize multiple CSS background
-            layers in a simple, intuitive way
+            Split, visualize, and edit every CSS background layer with ease.
           </p>
         </div>
 
@@ -78,23 +77,9 @@ export default function Home() {
 
         {/* Examples */}
         <section id="examples">
-          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-5">
-            <p className="font-semibold uppercase tracking-wider text-ink-muted">
-              Try an example
-            </p>
-            <p className="text-xs text-ink-muted">
-              Patterns from{' '}
-              <a
-                href="https://css-pattern.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2"
-              >
-                css-pattern.com
-              </a>{' '}
-              by Temani Afif
-            </p>
-          </div>
+          <p className="font-semibold uppercase tracking-wider text-ink-muted mb-5">
+            Try an example
+          </p>
           <div className="grid grid-cols-3 gap-4">
             {EXAMPLES.map((ex) => (
               <button
@@ -105,11 +90,27 @@ export default function Home() {
                 <div className="w-full aspect-video relative overflow-hidden">
                   <PreviewCanvas
                     css={ex.css}
-                    className="absolute inset-0 w-full h-full transition-transform duration-300 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full transition-transform duration-300 group-hover:scale-103"
                   />
                 </div>
                 <div className="px-3.5 py-3 transition-colors border-t border-line bg-canvas">
-                  <p className="text-sm font-medium">{ex.label}</p>
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="text-sm font-medium">{ex.label}</p>
+                    {ex.note && (
+                      <span className="text-[10px] text-ink-muted shrink-0">
+                        {ex.note}
+                      </span>
+                    )}
+                  </div>
+                  <a
+                    href={ex.source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[10px] text-ink-muted underline underline-offset-2 hover:text-ink transition-colors"
+                  >
+                    via {ex.source.name}
+                  </a>
                 </div>
               </button>
             ))}
