@@ -1,63 +1,57 @@
 export const EXAMPLES = [
   {
-    id: 'cubes',
-    label: 'Overlapping cubes',
+    id: 'gradient',
+    label: 'Prince Of Persia',
+    sourceName: 'MSHR',
+    sourceLink: 'https://www.mshr.app/mesh/1714056175013',
     css: `div {
-  --s: 64px;
-  --c1: #fef5e9;
-  --c2: #f6e0bc;
-  --c3: #f3ca84;
+  background-color: hsla(65, 60%, 97%, 1);
+  background-image:
+    radial-gradient(circle at 92% 93%, hsla(190, 56%, 91%, 0.53) 11%, transparent 79%),
+    radial-gradient(circle at 24% 86%, hsla(13, 52%, 90%, 1) 16%, transparent 83%),
+    radial-gradient(circle at 11% 94%, hsla(43, 55%, 90%, 1) 16%, transparent 51%),
+    radial-gradient(circle at 36% 38%, hsla(81, 82%, 98%, 1) 3%, transparent 59%),
+    radial-gradient(circle at 44% 9%, hsla(252, 61%, 51%, 0.48) 13%, transparent 83%);
+}`,
+  },
+  {
+    id: 'cubes',
+    label: '3D cubes',
+    sourceName: 'CSS Pattern',
+    sourceLink: 'https://css-pattern.com/overlapping-cubes/',
+    css: `div {
+  --s: 50px;
+  --c1: #f1f7ff;
+  --c2: #dde9fa;
+  --c3: #c9dcf4;
 
-  --_g: 0 120deg, #0000 0;
   background:
-    conic-gradient(             at calc(250%/3) calc(100%/3),var(--c3) var(--_g)),
-    conic-gradient(from -120deg at calc( 50%/3) calc(100%/3),var(--c2) var(--_g)),
-    conic-gradient(from  120deg at calc(100%/3) calc(250%/3),var(--c1) var(--_g)),
-    conic-gradient(from  120deg at calc(200%/3) calc(250%/3),var(--c1) var(--_g)),
-    conic-gradient(from -180deg at calc(100%/3) 50%,var(--c2)  60deg,var(--c1) var(--_g)),
-    conic-gradient(from   60deg at calc(200%/3) 50%,var(--c1)  60deg,var(--c3) var(--_g)),
-    conic-gradient(from  -60deg at 50% calc(100%/3),var(--c1) 120deg,var(--c2) 0 240deg,var(--c3) 0);
+    conic-gradient(             at calc(250%/3) calc(100%/3), var(--c3) 0 120deg, #0000 0),
+    conic-gradient(from -120deg at calc( 50%/3) calc(100%/3), var(--c2) 0 120deg, #0000 0),
+    conic-gradient(from  120deg at calc(100%/3) calc(250%/3), var(--c1) 0 120deg, #0000 0),
+    conic-gradient(from  120deg at calc(200%/3) calc(250%/3), var(--c1) 0 120deg, #0000 0),
+    conic-gradient(from -180deg at calc(100%/3) 50%,var(--c2)  60deg, var(--c1) 0 120deg, #0000 0),
+    conic-gradient(from   60deg at calc(200%/3) 50%,var(--c1)  60deg, var(--c3) 0 120deg, #0000 0),
+    conic-gradient(from  -60deg at 50% calc(100%/3),var(--c1) 120deg, var(--c2) 0 240deg, var(--c3) 0);
   background-size: calc(var(--s)*sqrt(3)) var(--s);
 }`,
   },
   {
-    id: 'arabesque',
-    label: 'Arabesque style',
+    id: 'zigzag',
+    label: 'ZigZag',
+    sourceName: 'MagicPattern',
+    sourceLink: 'https://www.magicpattern.design/tools/css-backgrounds',
     css: `div {
-  --s: 36px;
-  --c1: #f3ca84;
-  --c2: #fef5e9;
-
-  --t: calc(var(--s)/10);
-  --_c: #0000 calc(98% - var(--t)),var(--c1) calc(100% - var(--t)) 98%,#0000;
-  --_s: calc(2*var(--s)) calc(5*var(--s)/2);
-  --_r0: /var(--_s) radial-gradient(calc(var(--s)/2) at 0    20%,var(--_c));
-  --_r1: /var(--_s) radial-gradient(calc(var(--s)/2) at 100% 20%,var(--_c));
-  background:
-    0 0 var(--_r0),calc(-1*var(--s)) calc(5*var(--s)/4) var(--_r0),
-    var(--s) 0 var(--_r1),0 calc(5*var(--s)/4) var(--_r1),
-    conic-gradient(at var(--t) calc(20% + 2*var(--t)),#0000 75%,var(--c1) 0)
-    calc(var(--t)/-2) calc(var(--s) - var(--t))/var(--s) calc(5*var(--s)/4),
-    repeating-conic-gradient(var(--c2) 0 25%,#0000 0 50%)
-    var(--s) calc(var(--s)/-8)/var(--_s),
-    conic-gradient(from 90deg at var(--t) var(--t),var(--c2) 25%,var(--c1) 0)
-    calc((var(--s) - var(--t))/2) calc((var(--s) - var(--t))/2)/var(--s) calc(5*var(--s)/4);
+  --c: #f4bcaf;
+  background-image:
+    linear-gradient(135deg, var(--c) 25%, transparent 25%),
+    linear-gradient(225deg, var(--c) 25%, transparent 25%),
+    linear-gradient(45deg, var(--c) 25%, transparent 25%),
+    linear-gradient(315deg, var(--c) 25%, #ffe6d9 25%);
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 20px 20px;
+  background-repeat: repeat;
 }`,
-  },
-  {
-    id: 'pills',
-    label: 'Circles & Pills',
-    css: `div {
-  --s: 36px;
-  --c1: #f3ca84;
-  --c2: #fef5e9;
+  }
 
-  --_g:/calc(3*var(--s)) calc(2*var(--s))
-    conic-gradient(at 33% 25%,#0000 75%,var(--c1) 0);
-  background:
-     calc(var(--s)/-2) calc(var(--s)/4) var(--_g),
-     calc(var(--s)/2) calc(5*var(--s)/4) var(--_g),
-    radial-gradient(var(--c1) 34%,var(--c2) 36%) 0 0/var(--s) var(--s);
-}`,
-  },
 ]
