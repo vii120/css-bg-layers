@@ -62,6 +62,7 @@ function DraggableLayerCard({
   originalCss,
   isVisible,
   onToggleVisibility,
+  onUpdate,
 }: {
   layer: BgLayer
   order: number
@@ -69,6 +70,7 @@ function DraggableLayerCard({
   originalCss: string
   isVisible: boolean
   onToggleVisibility: () => void
+  onUpdate: (field: keyof BgLayer, value: string) => void
 }) {
   const dragControls = useDragControls()
   return (
@@ -80,6 +82,7 @@ function DraggableLayerCard({
         originalCss={originalCss}
         isVisible={isVisible}
         onToggleVisibility={onToggleVisibility}
+        onUpdate={onUpdate}
         dragControls={dragControls}
       />
     </Reorder.Item>
@@ -110,6 +113,10 @@ export default function EditPage() {
     setLayers(parsed)
   }, [stored])
 
+  function updateLayer(layerIndex: number, field: keyof BgLayer, value: string) {
+    setLayers((prev) => prev!.map((l) => l.index === layerIndex ? { ...l, [field]: value } : l))
+  }
+
   function toggleLayer(index: number) {
     setHiddenLayers((prev) => {
       const next = new Set(prev)
@@ -126,7 +133,7 @@ export default function EditPage() {
 
   return (
     <main className="md:h-[calc(100dvh-3.5rem)] w-full mx-auto px-8 py-10 flex flex-col-reverse md:flex-row gap-8 bg-canvas text-ink">
-      {error && (
+      {(error || !layers) ? (
         <div className="mx-auto text-sm text-ink-muted py-16 text-center">
           <p>{error}</p>
           <Link
@@ -136,9 +143,7 @@ export default function EditPage() {
             Go back
           </Link>
         </div>
-      )}
-
-      {layers && (
+      ) : (
         <>
           {/* Left — Variables + Layer list */}
           <div className="md:w-120 flex flex-col gap-4 min-h-0">
@@ -167,6 +172,7 @@ export default function EditPage() {
                     originalCss={originalCss}
                     isVisible={!hiddenLayers.has(layer.index)}
                     onToggleVisibility={() => toggleLayer(layer.index)}
+                    onUpdate={(field, value) => updateLayer(layer.index, field, value)}
                   />
                 ))}
               </Reorder.Group>

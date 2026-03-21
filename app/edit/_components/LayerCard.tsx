@@ -22,6 +22,17 @@ function buildLayerCss(layer: BgLayer, originalCss: string): string {
   return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue} }`
 }
 
+const SUB_PROP_FIELDS: { label: string; key: keyof BgLayer }[] = [
+  { label: 'position', key: 'position' },
+  { label: 'size', key: 'size' },
+  { label: 'repeat', key: 'repeat' },
+  { label: 'attachment', key: 'attachment' },
+  { label: 'origin', key: 'origin' },
+  { label: 'clip', key: 'clip' },
+  { label: 'blend-mode', key: 'blendMode' },
+  { label: 'color', key: 'color' },
+]
+
 export function LayerCard({
   layer,
   order,
@@ -29,6 +40,7 @@ export function LayerCard({
   originalCss,
   isVisible,
   onToggleVisibility,
+  onUpdate,
   dragControls,
 }: {
   layer: BgLayer
@@ -37,6 +49,7 @@ export function LayerCard({
   originalCss: string
   isVisible: boolean
   onToggleVisibility: () => void
+  onUpdate: (field: keyof BgLayer, value: string) => void
   dragControls: DragControls
 }) {
   const layerCss = buildLayerCss(layer, originalCss)
@@ -48,16 +61,7 @@ export function LayerCard({
         ? `${total} (bottom)`
         : order + 1
 
-  const subProps = [
-    layer.position && { label: 'position', value: layer.position },
-    layer.size && { label: 'size', value: layer.size },
-    layer.repeat && { label: 'repeat', value: layer.repeat },
-    layer.attachment && { label: 'attachment', value: layer.attachment },
-    layer.origin && { label: 'origin', value: layer.origin },
-    layer.clip && { label: 'clip', value: layer.clip },
-    layer.blendMode && { label: 'blend-mode', value: layer.blendMode },
-    layer.color && { label: 'color', value: layer.color },
-  ].filter(Boolean) as { label: string; value: string }[]
+  const subProps = SUB_PROP_FIELDS.filter(({ key }) => layer[key] != null)
 
   return (
     <div
@@ -96,17 +100,25 @@ export function LayerCard({
 
         {/* Raw value + sub-props */}
         <div className="flex-1 px-3.5 py-3 min-w-0 flex flex-col gap-2">
-          <p className="font-mono text-xs leading-relaxed text-ink break-all">
-            {layer.raw}
-          </p>
+          <textarea
+            className="select-text font-mono text-xs leading-relaxed text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors resize-none break-all"
+            style={{ fieldSizing: 'content' } as React.CSSProperties}
+            value={layer.raw}
+            onChange={(e) => onUpdate('raw', e.target.value)}
+            spellCheck={false}
+            rows={1}
+          />
           {subProps.length > 0 && (
-            <div className="space-y-1">
-              {subProps.map((p) => (
-                <div key={p.label} className="flex gap-2 text-xs">
-                  <span className="text-ink-muted shrink-0 w-20">
-                    {p.label}
-                  </span>
-                  <span className="font-mono text-ink">{p.value}</span>
+            <div>
+              {subProps.map(({ label, key }) => (
+                <div key={label} className="flex gap-2 text-xs items-center">
+                  <span className="text-ink-muted shrink-0 w-20">{label}</span>
+                  <input
+                    className="select-text font-mono text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors"
+                    value={layer[key] as string}
+                    onChange={(e) => onUpdate(key, e.target.value)}
+                    spellCheck={false}
+                  />
                 </div>
               ))}
             </div>
