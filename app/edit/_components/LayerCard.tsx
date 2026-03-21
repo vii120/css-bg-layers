@@ -56,9 +56,9 @@ export function LayerCard({
 
   const displayNumber =
     order === 0
-      ? `1 (top)`
+      ? `1 - top`
       : order === total - 1
-        ? `${total} (bottom)`
+        ? `${total} - bottom`
         : order + 1
 
   const subProps = SUB_PROP_FIELDS.filter(({ key }) => layer[key] != null)

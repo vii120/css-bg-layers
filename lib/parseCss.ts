@@ -172,17 +172,20 @@ export function parseCssInput(input: string): BgLayer[] | null {
   const clips = bgClip ? splitTopLevelCommas(bgClip) : []
   const blendModes = bgBlendMode ? splitTopLevelCommas(bgBlendMode) : []
 
+  const cycle = <T,>(arr: T[], i: number): T | undefined =>
+    arr.length > 0 ? arr[i % arr.length] : undefined
+
   return images.map((image, i) => ({
     index: i,
     raw: image,
     type: detectLayerType(image),
-    position: positions[i],
-    size: sizes[i],
-    repeat: repeats[i],
-    attachment: attachments[i],
-    origin: origins[i],
-    clip: clips[i],
-    blendMode: blendModes[i],
+    position: cycle(positions, i),
+    size: cycle(sizes, i),
+    repeat: cycle(repeats, i),
+    attachment: cycle(attachments, i),
+    origin: cycle(origins, i),
+    clip: cycle(clips, i),
+    blendMode: cycle(blendModes, i),
     color: i === count - 1 ? bgColor : undefined,
   }))
 }

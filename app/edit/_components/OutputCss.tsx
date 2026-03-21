@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { reconstructBackground, type BgLayer } from '@/lib/parseCss'
 import {
   Dialog,
@@ -11,15 +12,35 @@ import {
 import { CopyButton } from './CopyButton'
 import { SquareCode } from 'lucide-react'
 
-const BG_SUBPROPS = [
-  'background-size',
-  'background-repeat',
-  'background-position',
-  'background-attachment',
-  'background-origin',
-  'background-clip',
-  'background-blend-mode',
-]
+function minimalCycle(values: string[]): string[] {
+  for (let k = 1; k <= Math.floor(values.length / 2); k++) {
+    if (values.length % k !== 0) continue
+    const unit = values.slice(0, k)
+    if (values.every((v, i) => v === unit[i % k])) return unit
+  }
+  return values
+}
+
+function buildOutput(layers: BgLayer[], originalCss: string): string {
+  const block = originalCss.trim().match(/\{([\s\S]*)\}/)
+  const inner = block ? block[1] : originalCss
+
+  const customProps = [...inner.matchAll(/(--[\w-]+\s*:[^;]+)/g)]
+    .map((m) => `  ${m[1].trim()};`)
+    .join('\n')
+
+  const bgValue = reconstructBackground(layers)
+
+  // blend-mode can't go in the shorthand — output separately if present
+  const blendModes = layers.map((l) => l.blendMode).filter((v): v is string => !!v)
+  const blendModeDecl = blendModes.length === layers.length
+    ? `  background-blend-mode: ${minimalCycle(blendModes).join(', ')};`
+    : ''
+
+  return [customProps, `  background:\n    ${bgValue};`, blendModeDecl]
+    .filter(Boolean)
+    .join('\n')
+}
 
 export function OutputCss({
   layers,
@@ -28,27 +49,19 @@ export function OutputCss({
   layers: BgLayer[]
   originalCss: string
 }) {
-  const block = originalCss.trim().match(/\{([\s\S]*)\}/)
-  const inner = block ? block[1] : originalCss
+  const [outputText, setOutputText] = useState('')
 
-  const customProps = [...inner.matchAll(/(--[\w-]+\s*:[^;]+)/g)]
-    .map((m) => `  ${m[1].trim()};`)
-    .join('\n')
-
-  const subProps = BG_SUBPROPS.flatMap((prop) => {
-    const m = inner.match(new RegExp(`${prop}\\s*:([^;]+)`))
-    return m ? [`  ${prop}: ${m[1].trim()};`] : []
-  }).join('\n')
-
-  const bgValue = reconstructBackground(layers)
-  const outputText = [customProps, `  background:\n    ${bgValue};`, subProps]
-    .filter(Boolean)
-    .join('\n')
+  function handleOpen() {
+    setOutputText(buildOutput(layers, originalCss))
+  }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-2">
+        <button
+          onClick={handleOpen}
+          className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-2"
+        >
           <SquareCode size={14} /> View CSS
         </button>
       </DialogTrigger>

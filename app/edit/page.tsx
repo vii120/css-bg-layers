@@ -5,21 +5,11 @@ import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 import { Reorder, useDragControls } from 'motion/react'
 import { cn } from '@/lib/utils'
-import { parseCssInput, type BgLayer } from '@/lib/parseCss'
+import { parseCssInput, reconstructBackground, type BgLayer } from '@/lib/parseCss'
 import { useCssStore } from '@/lib/store'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import { LayerCard } from './_components/LayerCard'
 import { OutputCss } from './_components/OutputCss'
-
-const BG_SUBPROPS = [
-  'background-size',
-  'background-repeat',
-  'background-position',
-  'background-attachment',
-  'background-origin',
-  'background-clip',
-  'background-blend-mode',
-]
 
 function buildFilteredPreviewCss(
   originalCss: string,
@@ -33,17 +23,17 @@ function buildFilteredPreviewCss(
     .map((m) => m[1].trim())
     .join('; ')
 
-  // Carry over sub-properties like background-size that the shorthand path drops
-  const subPropDecls = BG_SUBPROPS.flatMap((prop) => {
-    const m = inner.match(new RegExp(`${prop}\\s*:([^;]+)`))
-    return m ? [`${prop}: ${m[1].trim()}`] : []
-  }).join('; ')
-
   const visibleLayers = layers.filter((l) => !hiddenIndices.has(l.index))
   if (visibleLayers.length === 0) return ''
 
-  const bgValue = visibleLayers.map((l) => l.raw).join(', ')
-  return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue}${subPropDecls ? `; ${subPropDecls}` : ''} }`
+  const bgValue = reconstructBackground(visibleLayers)
+
+  const blendModes = visibleLayers.map((l) => l.blendMode).filter(Boolean)
+  const blendModeDecl = blendModes.length > 0
+    ? `; background-blend-mode: ${blendModes.join(', ')}`
+    : ''
+
+  return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue}${blendModeDecl} }`
 }
 
 function extractCssVariables(css: string): { name: string; value: string }[] {
