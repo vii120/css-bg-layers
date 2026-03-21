@@ -1,18 +1,17 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CssEditor } from './CssEditor'
 import { PreviewCanvas } from './_components/PreviewCanvas'
 import { EXAMPLES } from '@/lib/examples'
+import { useCssStore } from '@/lib/store'
 
 export default function Home() {
-  const [css, setCss] = useState('')
+  const { css, setCss } = useCssStore()
   const hasInput = css.trim().length > 0
   const router = useRouter()
 
   function handleAnalyse() {
-    sessionStorage.setItem('layer-css', css)
     router.push('/edit')
   }
 

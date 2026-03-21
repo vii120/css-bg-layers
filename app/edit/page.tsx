@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { parseCssInput, type BgLayer } from '@/lib/parseCss'
+import { useCssStore } from '@/lib/store'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import { LayerCard } from './_components/LayerCard'
 import { OutputCss } from './_components/OutputCss'
@@ -54,6 +55,7 @@ function extractCssVariables(css: string): { name: string; value: string }[] {
 }
 
 export default function EditPage() {
+  const { css: stored } = useCssStore()
   const [originalCss, setOriginalCss] = useState('')
   const [layers, setLayers] = useState<BgLayer[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -61,7 +63,6 @@ export default function EditPage() {
   const [varsOpen, setVarsOpen] = useState(true)
 
   useEffect(() => {
-    const stored = sessionStorage.getItem('layer-css')
     if (!stored) {
       setError('No CSS found. Go back and paste some CSS.')
       return
@@ -75,7 +76,7 @@ export default function EditPage() {
       return
     }
     setLayers(parsed)
-  }, [])
+  }, [stored])
 
   function toggleLayer(index: number) {
     setHiddenLayers((prev) => {
