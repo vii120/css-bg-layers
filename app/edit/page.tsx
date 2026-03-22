@@ -303,7 +303,7 @@ export default function EditPage() {
                   className={cn(
                     'px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer',
                     r.label === aspectRatio.label
-                      ? 'bg-indigo-400 text-white'
+                      ? 'bg-accent text-white'
                       : 'text-ink-muted hover:text-ink hover:bg-surface',
                   )}
                 >

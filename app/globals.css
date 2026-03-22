@@ -5,10 +5,10 @@
 :root {
   --bg: #faf9f7;
   --surface: #f2f0ec;
-  --border: oklch(0.922 0 0);
+  --border: #e0dbd4;
   --text: #1c1a17;
   --text-muted: #8a837b;
-  --accent: #3b52d4;
+  --accent: #3b9de0;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);

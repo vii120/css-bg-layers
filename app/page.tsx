@@ -38,7 +38,7 @@ export default function Home() {
             <br />
             CSS backgrounds,
             <br />
-            <span className="relative z-1 px-2  before:absolute before:inset-0 before:rounded-sm before:bg-linear-[80deg,var(--color-blue-300),var(--color-blue-100)_5%_30%,var(--color-blue-200)_50%_95%,var(--color-blue-400)] before:-skew-1 before:-z-1">
+            <span className="relative z-1 px-2  before:absolute before:inset-0 before:rounded-sm before:bg-linear-[80deg,var(--color-blue-300),var(--color-blue-100)_5%_30%,var(--color-blue-200)_50%_95%,var(--color-blue-400)] before:-skew-x-3 before:-skew-y-1 before:-z-1">
               layer by layer
             </span>
             {/* Deco */}
@@ -96,7 +96,7 @@ export default function Home() {
           <button
             disabled={!hasInput}
             onClick={handleAnalyse}
-            className="group block mx-auto md:mx-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all border bg-surface text-ink-muted border-line cursor-not-allowed enabled:bg-indigo-400 enabled:text-white enabled:border-transparent enabled:cursor-pointer enabled:active:scale-[0.97]"
+            className="group block mx-auto md:mx-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all border bg-surface text-ink-muted border-line cursor-not-allowed enabled:bg-accent enabled:text-white enabled:border-transparent enabled:cursor-pointer enabled:active:scale-[0.97]"
           >
             Analyse layers{' '}
             <span className="inline-block transition-transform group-enabled:group-hover:translate-x-0.5">
