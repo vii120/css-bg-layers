@@ -26,8 +26,8 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-canvas text-ink">
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 md:px-8 py-10 md:py-16 space-y-12 md:space-y-16">
         {/* Intro */}
-        <div className="text-center flex flex-col items-center gap-4">
-          <h1 className="text-3xl md:text-[2.5rem] font-semibold tracking-tight leading-relaxed relative font-heading">
+        <div className="text-center flex flex-col items-center gap-6">
+          <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-snug relative font-heading">
             Break down
             <br />
             CSS backgrounds,
@@ -41,7 +41,7 @@ export default function Home() {
             <div className="absolute bottom-0 right-full w-[45px] aspect-square bg-conic-[var(--color-red-400)_25%,transparent_25%_50%,var(--color-red-400)_50%_75%,transparent_75%] bg-size-[30px_30px] -rotate-20 opacity-75 transform-[translateZ(0)]"></div>
           </h1>
           <p className="text-lg leading-relaxed text-ink-muted">
-            Split, visualize, and edit every CSS background layer with ease.
+            Make sense of complex CSS backgrounds, one layer at a time.
           </p>
         </div>
 

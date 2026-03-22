@@ -62,10 +62,10 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <header className="px-4 md:px-8 h-14 flex items-center shrink-0 border-b border-line">
+        <header className="px-4 md:px-8 h-16 flex items-center shrink-0 border-b border-line">
           <Link href="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="bg.layers logo" className="w-6" />
-            <span className="text-xl font-semibold tracking-tight">
+            <img src="/logo.png" alt="bg.layers logo" className="w-7" />
+            <span className="text-[1.35rem] font-bold tracking-tight">
               bg.layers
             </span>
           </Link>

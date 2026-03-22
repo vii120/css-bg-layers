@@ -251,7 +251,7 @@ export default function EditPage() {
                   }}
                   className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono"
                 >
-                  + New
+                  ← New
                 </button>
                 <OutputCss layers={visibleLayers} cssVars={cssVars} />
               </div>
