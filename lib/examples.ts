@@ -41,10 +41,10 @@ export const EXAMPLES = [
     source: { name: 'MagicPattern', url: 'https://www.magicpattern.design/tools/css-backgrounds' },
     css: `div {
   background-image:
-    linear-gradient(135deg, #f4bcaf 25%, transparent 25%),
-    linear-gradient(225deg, #f4bcaf 25%, transparent 25%),
-    linear-gradient(45deg, #f4bcaf 25%, transparent 25%),
-    linear-gradient(315deg, #f4bcaf 25%, #ffe6d9 25%);
+    linear-gradient(135deg, #f2c8be 25%, transparent 25%),
+    linear-gradient(225deg, #f2c8be 25%, transparent 25%),
+    linear-gradient(45deg, #f2c8be 25%, transparent 25%),
+    linear-gradient(315deg, #f2c8be 25%, #f7e7de 25%);
   background-position: 10px 0, 10px 0, 0 0, 0 0;
   background-size: 20px 20px;
   background-repeat: repeat;

@@ -17,16 +17,11 @@ import { LayerCard } from './_components/LayerCard'
 import { OutputCss } from './_components/OutputCss'
 
 function buildFilteredPreviewCss(
-  originalCss: string,
+  cssVars: { name: string; value: string }[],
   layers: BgLayer[],
   hiddenIndices: Set<number>,
 ): string {
-  const block = originalCss.trim().match(/\{([\s\S]*)\}/)
-  const inner = block ? block[1] : originalCss
-
-  const customProps = [...inner.matchAll(/(--[\w-]+\s*:[^;]+)/g)]
-    .map((m) => m[1].trim())
-    .join('; ')
+  const customProps = cssVars.map((v) => `${v.name}: ${v.value}`).join('; ')
 
   const visibleLayers = layers.filter((l) => !hiddenIndices.has(l.index))
   if (visibleLayers.length === 0) return ''
@@ -98,6 +93,7 @@ export default function EditPage() {
   const [error, setError] = useState<string | null>(null)
   const [hiddenLayers, setHiddenLayers] = useState<Set<number>>(new Set())
   const [varsOpen, setVarsOpen] = useState(true)
+  const [cssVars, setCssVars] = useState<{ name: string; value: string }[]>([])
 
   useEffect(() => {
     if (!stored) {
@@ -113,7 +109,14 @@ export default function EditPage() {
       return
     }
     setLayers(parsed)
+    setCssVars(extractCssVariables(stored))
   }, [stored])
+
+  function updateVar(name: string, newValue: string) {
+    setCssVars((prev) =>
+      prev.map((v) => (v.name === name ? { ...v, value: newValue } : v)),
+    )
+  }
 
   function updateLayer(
     layerIndex: number,
@@ -135,9 +138,8 @@ export default function EditPage() {
 
   const visibleLayers = layers?.filter((l) => !hiddenLayers.has(l.index)) ?? []
   const previewCss = layers
-    ? buildFilteredPreviewCss(originalCss, layers, hiddenLayers)
+    ? buildFilteredPreviewCss(cssVars, layers, hiddenLayers)
     : ''
-  const cssVars = extractCssVariables(originalCss)
 
   return (
     <main className="md:h-[calc(100dvh-3.5rem)] w-full mx-auto px-8 py-10 flex flex-col-reverse md:flex-row gap-8 bg-canvas text-ink">
@@ -221,7 +223,12 @@ export default function EditPage() {
                         <span className="text-ink-muted shrink-0">
                           {v.name}
                         </span>
-                        <span className="text-ink truncate">{v.value}</span>
+                        <input
+                          className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas transition-colors"
+                          value={v.value}
+                          onChange={(e) => updateVar(v.name, e.target.value)}
+                          spellCheck={false}
+                        />
                       </div>
                     ))}
                   </div>
@@ -246,7 +253,7 @@ export default function EditPage() {
                 >
                   + New
                 </button>
-                <OutputCss layers={visibleLayers} originalCss={originalCss} />
+                <OutputCss layers={visibleLayers} cssVars={cssVars} />
               </div>
             </div>
             <PreviewCanvas

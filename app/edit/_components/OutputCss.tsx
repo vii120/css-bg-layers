@@ -22,13 +22,8 @@ function minimalCycle(values: string[]): string[] {
   return values
 }
 
-function buildOutput(layers: BgLayer[], originalCss: string): string {
-  const block = originalCss.trim().match(/\{([\s\S]*)\}/)
-  const inner = block ? block[1] : originalCss
-
-  const customProps = [...inner.matchAll(/(--[\w-]+\s*:[^;]+)/g)]
-    .map((m) => `  ${m[1].trim()};`)
-    .join('\n')
+function buildOutput(layers: BgLayer[], cssVars: { name: string; value: string }[]): string {
+  const customProps = cssVars.map((v) => `  ${v.name}: ${v.value};`).join('\n')
 
   const bgValue = reconstructBackground(layers)
 
@@ -45,15 +40,15 @@ function buildOutput(layers: BgLayer[], originalCss: string): string {
 
 export function OutputCss({
   layers,
-  originalCss,
+  cssVars,
 }: {
   layers: BgLayer[]
-  originalCss: string
+  cssVars: { name: string; value: string }[]
 }) {
   const [outputText, setOutputText] = useState('')
 
   function handleOpen() {
-    setOutputText(buildOutput(layers, originalCss))
+    setOutputText(buildOutput(layers, cssVars))
   }
 
   return (
