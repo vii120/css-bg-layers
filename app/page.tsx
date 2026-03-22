@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { motion } from 'motion/react'
 import { CssEditor } from './CssEditor'
 import { PreviewCanvas } from './_components/PreviewCanvas'
 import { EXAMPLES } from '@/lib/examples'
@@ -26,7 +27,12 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-canvas text-ink">
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 md:px-8 py-10 md:py-16 space-y-12 md:space-y-16">
         {/* Intro */}
-        <div className="text-center flex flex-col items-center gap-6">
+        <motion.div
+          className="text-center flex flex-col items-center gap-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+        >
           <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-snug relative font-heading">
             Break down
             <br />
@@ -41,12 +47,16 @@ export default function Home() {
             <div className="absolute bottom-0 right-full w-[45px] aspect-square bg-conic-[var(--color-red-400)_25%,transparent_25%_50%,var(--color-red-400)_50%_75%,transparent_75%] bg-size-[30px_30px] -rotate-20 opacity-75 transform-[translateZ(0)]"></div>
           </h1>
           <p className="text-lg leading-relaxed text-ink-muted">
-            Make sense of complex CSS backgrounds, one layer at a time.
+            Dive into each layer and see how it fits together.
           </p>
-        </div>
+        </motion.div>
 
         {/* Editor */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}
+        >
           <div className="grid md:grid-cols-2 gap-5 mb-4">
             {/* Input */}
             <div className="flex flex-col gap-2">
@@ -93,10 +103,15 @@ export default function Home() {
               →
             </span>
           </button>
-        </div>
+        </motion.div>
 
         {/* Examples */}
-        <section id="examples">
+        <motion.section
+          id="examples"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
+        >
           <p className="font-semibold uppercase tracking-wider text-ink-muted mb-5">
             Try an example
           </p>
@@ -141,7 +156,7 @@ export default function Home() {
               )
             })}
           </div>
-        </section>
+        </motion.section>
       </main>
 
       <footer className="max-w-5xl w-full mx-auto px-4 md:px-8 py-6 mt-auto border-t border-line text-ink-muted flex items-center justify-end text-sm">

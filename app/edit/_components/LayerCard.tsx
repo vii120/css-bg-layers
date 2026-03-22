@@ -1,7 +1,7 @@
 'use client'
 
 import { Eye, EyeClosed, GripVertical } from 'lucide-react'
-import type { DragControls } from 'motion/react'
+import { motion, type DragControls } from 'motion/react'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import type { BgLayer } from '@/lib/parseCss'
 import { cn } from '@/lib/utils'
@@ -82,13 +82,16 @@ export function LayerCard({
             {displayNumber}
           </span>
         </div>
-        <button
+        <motion.button
           onClick={onToggleVisibility}
           className="text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-3"
           aria-label={isVisible ? 'Hide layer' : 'Show layer'}
+          whileTap={{ scale: 0.8 }}
+          whileHover={{ scale: 1.15 }}
+          transition={{ duration: 0.12 }}
         >
           {isVisible ? <Eye size={14} /> : <EyeClosed size={14} />}
-        </button>
+        </motion.button>
       </div>
 
       {/* Body: square preview + content */}

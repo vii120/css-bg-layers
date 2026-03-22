@@ -16,7 +16,11 @@ export function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="text-xs px-2.5 py-1 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer flex items-center gap-2"
+      className={`text-xs px-2.5 py-1 rounded border transition-all cursor-pointer flex items-center gap-2 ${
+        copied
+          ? 'border-accent/30 bg-accent/8 text-accent'
+          : 'border-line bg-canvas hover:bg-surface text-ink-muted'
+      }`}
     >
       <Copy size={14} />
       {copied ? 'Copied!' : 'Copy'}

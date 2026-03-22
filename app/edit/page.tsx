@@ -70,6 +70,10 @@ function DraggableLayerCard({
       dragListener={false}
       dragControls={dragControls}
       className="shrink-0"
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: order * 0.05, duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
+      whileDrag={{ scale: 1.015, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 50 }}
     >
       <LayerCard
         layer={layer}
