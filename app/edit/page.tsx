@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
-import { Reorder, useDragControls } from 'motion/react'
+import { motion, Reorder, useDragControls } from 'motion/react'
 import { cn } from '@/lib/utils'
 import {
   parseCssInput,
@@ -72,8 +72,16 @@ function DraggableLayerCard({
       className="shrink-0"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: order * 0.05, duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
-      whileDrag={{ scale: 1.015, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 50 }}
+      transition={{
+        delay: order * 0.05,
+        duration: 0.2,
+        ease: [0.25, 1, 0.5, 1],
+      }}
+      whileDrag={{
+        scale: 1.015,
+        boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+        zIndex: 50,
+      }}
     >
       <LayerCard
         layer={layer}
@@ -89,6 +97,13 @@ function DraggableLayerCard({
   )
 }
 
+const ASPECT_RATIOS = [
+  { label: '16:9', ratio: '16 / 9' },
+  { label: '4:3', ratio: '4 / 3' },
+  { label: '1:1', ratio: '1 / 1' },
+  { label: '9:16', ratio: '9 / 16' },
+] as const
+
 export default function EditPage() {
   const { css: stored, setCss } = useCssStore()
   const router = useRouter()
@@ -98,6 +113,9 @@ export default function EditPage() {
   const [hiddenLayers, setHiddenLayers] = useState<Set<number>>(new Set())
   const [varsOpen, setVarsOpen] = useState(true)
   const [cssVars, setCssVars] = useState<{ name: string; value: string }[]>([])
+  const [aspectRatio, setAspectRatio] = useState<
+    (typeof ASPECT_RATIOS)[number]
+  >(ASPECT_RATIOS[0])
 
   useEffect(() => {
     if (!stored) {
@@ -260,10 +278,39 @@ export default function EditPage() {
                 <OutputCss layers={visibleLayers} cssVars={cssVars} />
               </div>
             </div>
-            <PreviewCanvas
-              css={previewCss}
-              className="w-full max-w-72 md:w-2/3 md:min-w-80 md:max-w-200 aspect-square m-auto rounded-md overflow-hidden bg-surface border border-line"
-            />
+            <div className="flex-1 min-h-0 flex items-center justify-center">
+              <motion.div
+                layout
+                style={{
+                  aspectRatio: aspectRatio.ratio,
+                  transition: 'aspect-ratio 0.3s ease',
+                }}
+                className={cn(
+                  'rounded-md overflow-hidden bg-surface border border-line',
+                  aspectRatio.label === '9:16'
+                    ? 'h-full'
+                    : 'w-full max-w-72 md:max-w-150',
+                )}
+              >
+                <PreviewCanvas css={previewCss} className="w-full h-full" />
+              </motion.div>
+            </div>
+            <div className="flex justify-center items-center gap-1 shrink-0">
+              {ASPECT_RATIOS.map((r) => (
+                <button
+                  key={r.label}
+                  onClick={() => setAspectRatio(r)}
+                  className={cn(
+                    'px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer',
+                    r.label === aspectRatio.label
+                      ? 'bg-indigo-400 text-white'
+                      : 'text-ink-muted hover:text-ink hover:bg-surface',
+                  )}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
           </div>
         </>
       )}
