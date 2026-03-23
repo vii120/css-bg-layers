@@ -73,11 +73,15 @@ export function LayerCard({
       {/* Header row */}
       <div className="px-3.5 py-2 border-b border-line bg-surface flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <GripVertical
-            size={14}
-            className="text-ink-muted/50 hover:text-ink-muted cursor-grab active:cursor-grabbing touch-none"
+          <span
+            className="hit-area-2 touch-none cursor-grab active:cursor-grabbing"
             onPointerDown={(e) => dragControls.start(e)}
-          />
+          >
+            <GripVertical
+              size={14}
+              className="text-ink-muted/50 hover:text-ink-muted pointer-events-none"
+            />
+          </span>
           <span className="text-xs font-medium text-ink-muted tabular-nums">
             {displayNumber}
           </span>

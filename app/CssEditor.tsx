@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { EditorView, minimalSetup } from 'codemirror'
 import { placeholder as cmPlaceholder } from '@codemirror/view'
 import { css } from '@codemirror/lang-css'
@@ -26,21 +26,21 @@ const editorTheme = EditorView.theme({
   },
 }, { dark: false })
 
-export function CssEditor({
-  value,
-  onChange,
-  placeholder,
-  className,
-  style,
-}: {
+export type CssEditorHandle = { focus: () => void }
+
+export const CssEditor = forwardRef<CssEditorHandle, {
   value: string
   onChange: (v: string) => void
   placeholder?: string
   className?: string
   style?: React.CSSProperties
-}) {
+}>(function CssEditor({ value, onChange, placeholder, className, style }, ref) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
+
+  useImperativeHandle(ref, () => ({
+    focus: () => viewRef.current?.focus(),
+  }))
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -82,4 +82,4 @@ export function CssEditor({
   }, [value])
 
   return <div ref={containerRef} className={className} style={style} />
-}
+})

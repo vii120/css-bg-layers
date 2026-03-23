@@ -79,7 +79,6 @@ function DraggableLayerCard({
       }}
       whileDrag={{
         scale: 1.015,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
         zIndex: 50,
       }}
     >
@@ -193,7 +192,7 @@ export default function EditPage() {
                 axis="y"
                 values={layers}
                 onReorder={setLayers}
-                className="flex-1 min-h-0 overflow-auto flex flex-col gap-2"
+                className="flex-1 min-h-0 overflow-auto flex flex-col gap-2 -m-1 p-1"
               >
                 {layers.map((layer, i) => (
                   <DraggableLayerCard

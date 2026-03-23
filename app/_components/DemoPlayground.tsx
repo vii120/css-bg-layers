@@ -145,8 +145,7 @@ export function DemoPlayground() {
             setMode((prev) => (prev === 'layers' ? 'raw' : 'layers'))
           }
           className="w-45 text-xs px-4 py-2 rounded-full bg-accent text-white font-mono cursor-pointer relative overflow-hidden"
-          whileHover={{ y: -1, scale: 1.02 }}
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 500, damping: 25 }}
         >
           <AnimatePresence mode="popLayout" initial={false}>
