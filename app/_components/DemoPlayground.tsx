@@ -1,8 +1,14 @@
 'use client'
 
-import { memo, useMemo, useState } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { GripVertical, Layers2, Braces } from 'lucide-react'
-import { AnimatePresence, Reorder, useDragControls, motion } from 'motion/react'
+import {
+  AnimatePresence,
+  Reorder,
+  useDragControls,
+  motion,
+  useAnimationControls,
+} from 'motion/react'
 import { PreviewCanvas } from './PreviewCanvas'
 
 interface DemoLayer {
@@ -61,10 +67,10 @@ const LayerRow = memo(function LayerRow({
       value={layer}
       dragListener={false}
       dragControls={dragControls}
-      className="flex items-center gap-2.5 rounded border border-line bg-canvas px-3 py-2.5 select-none cursor-default"
+      className="group flex items-center gap-2.5 rounded border border-line bg-canvas px-3 py-2.5 select-none cursor-default transition-colors hover:border-accent"
       whileDrag={{
-        scale: 1.015,
-        boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
+        scale: 1.02,
+        boxShadow: '0 6px 20px rgba(0,0,0,0.1)',
         zIndex: 50,
       }}
       initial={{ opacity: 0, x: -6 }}
@@ -81,7 +87,7 @@ const LayerRow = memo(function LayerRow({
       >
         <GripVertical
           size={14}
-          className="text-ink-muted/40 hover:text-ink-muted pointer-events-none"
+          className="text-ink-muted/30 group-hover:text-accent/70 transition-colors pointer-events-none"
         />
       </span>
       <span className="text-xs tabular-nums text-ink-muted/50 shrink-0 w-3.5 font-mono">
@@ -111,8 +117,22 @@ const panelVariants = {
 export function DemoPlayground() {
   const [mode, setMode] = useState<'raw' | 'layers'>('raw')
   const [layers, setLayers] = useState<DemoLayer[]>(INITIAL_LAYERS)
+  const previewControls = useAnimationControls()
+  const prevOrderRef = useRef(layers.map((l) => l.id).join(','))
 
   const previewCss = useMemo(() => buildPreviewCss(layers), [layers])
+
+  // Bounce the preview when layer order changes — rewards the drag
+  useEffect(() => {
+    const order = layers.map((l) => l.id).join(',')
+    if (order !== prevOrderRef.current) {
+      prevOrderRef.current = order
+      previewControls.start({
+        scale: [1, 1.025, 1],
+        transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] },
+      })
+    }
+  }, [layers, previewControls])
 
   return (
     <div className="w-full md:w-fit mx-auto flex flex-col gap-4 items-stretch">
@@ -120,11 +140,14 @@ export function DemoPlayground() {
         <div className="font-semibold uppercase tracking-wider text-ink-muted">
           Playground
         </div>
-        <button
+        <motion.button
           onClick={() =>
             setMode((prev) => (prev === 'layers' ? 'raw' : 'layers'))
           }
           className="w-45 text-xs px-4 py-2 rounded-full bg-accent text-white font-mono cursor-pointer relative overflow-hidden"
+          whileHover={{ y: -1, scale: 1.02 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
         >
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
@@ -148,7 +171,7 @@ export function DemoPlayground() {
               )}
             </motion.div>
           </AnimatePresence>
-        </button>
+        </motion.button>
       </div>
 
       <div className="contents md:flex gap-4 items-center justify-center">
@@ -199,15 +222,21 @@ export function DemoPlayground() {
                     <LayerRow key={layer.id} layer={layer} index={i} />
                   ))}
                 </Reorder.Group>
+                <p className="mt-2 text-[10px] text-ink-muted/40 font-mono text-center">
+                  drag to reorder ↕
+                </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
         {/* Right — preview */}
-        <div className="w-50 aspect-4/3 mx-auto rounded-md overflow-hidden border border-line">
+        <motion.div
+          animate={previewControls}
+          className="w-50 aspect-4/3 mx-auto rounded-md overflow-hidden border border-line"
+        >
           <PreviewCanvas css={previewCss} className="w-full h-full" />
-        </div>
+        </motion.div>
       </div>
     </div>
   )
