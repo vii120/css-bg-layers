@@ -104,7 +104,7 @@ export function LayerCard({
         {/* Raw value + sub-props */}
         <div className="flex-1 px-3.5 py-3 min-w-0 flex flex-col gap-2">
           <textarea
-            className="select-text font-mono text-xs leading-relaxed text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors resize-none break-all"
+            className="select-text font-mono text-xs leading-relaxed text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors resize-none break-all max-h-25 overflow-y-auto"
             style={{ fieldSizing: 'content' } as React.CSSProperties}
             value={layer.raw}
             onChange={(e) => onUpdate('raw', e.target.value)}
