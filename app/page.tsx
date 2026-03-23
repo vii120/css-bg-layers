@@ -7,6 +7,7 @@ import { CssEditor } from './CssEditor'
 import { PreviewCanvas } from './_components/PreviewCanvas'
 import { HeadingDeco } from './_components/HeadingDeco'
 import { Footer } from './_components/Footer'
+import { DemoPlayground } from './_components/DemoPlayground'
 import { EXAMPLES } from '@/lib/examples'
 import { useCssStore } from '@/lib/store'
 import { parseCssInput } from '@/lib/parseCss'
@@ -50,11 +51,20 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {/* Editor */}
+        {/* Demo */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}
+        >
+          <DemoPlayground />
+        </motion.div>
+
+        {/* Editor */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
         >
           <div className="grid md:grid-cols-2 gap-5 mb-4">
             {/* Input */}
