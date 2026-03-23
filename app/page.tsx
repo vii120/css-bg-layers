@@ -57,8 +57,9 @@ export default function Home() {
             <HeadingDeco />
           </h1>
           <p className="text-lg leading-relaxed text-ink-muted">
-            Paste any background CSS and see exactly what each layer contributes
-            — separately.
+            Paste any background CSS
+            <br className="hidden md:block" />
+            and see what each layer contributes — separately.
           </p>
         </motion.div>
 
