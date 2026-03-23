@@ -23,6 +23,7 @@ Run `npm run dev` to start the development server.
 - [Motion](https://motion.dev)
 - [shadcn/ui](https://ui.shadcn.com)
 - [hit-area](https://bazza.dev/craft/2026/hit-area)
+- UI polish with [Impeccable](https://impeccable.style/)
 
 ## License
 

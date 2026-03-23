@@ -12,6 +12,7 @@ import { DemoPlayground } from './_components/DemoPlayground'
 import { EXAMPLES } from '@/lib/examples'
 import { useCssStore } from '@/lib/store'
 import { parseCssInput } from '@/lib/parseCss'
+import { Layers } from 'lucide-react'
 
 export default function Home() {
   const { css, setCss } = useCssStore()
@@ -56,8 +57,8 @@ export default function Home() {
             <HeadingDeco />
           </h1>
           <p className="text-lg leading-relaxed text-ink-muted">
-            Paste any <code className="font-mono text-base">background</code>{' '}
-            CSS and see exactly what each layer contributes — separately.
+            Paste any background CSS and see exactly what each layer contributes
+            — separately.
           </p>
         </motion.div>
 
@@ -71,9 +72,9 @@ export default function Home() {
           <DemoPlayground />
           <button
             onClick={scrollToEditor}
-            className="text-sm text-ink-muted hover:text-ink transition-all border border-line rounded-full px-4 py-1.5 hover:border-ink-muted/40 cursor-pointer active:scale-97"
+            className="text-sm font-medium bg-accent text-white px-5 py-2.5 rounded-full cursor-pointer transition-all hover:opacity-90 active:scale-97"
           >
-            Try it with your own CSS ↓
+            Try it with your own CSS
           </button>
         </motion.div>
 
@@ -136,12 +137,10 @@ export default function Home() {
           <button
             disabled={!hasInput}
             onClick={handleAnalyse}
-            className="group block mx-auto md:mx-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all border bg-surface text-ink-muted border-line cursor-not-allowed enabled:bg-accent enabled:text-white enabled:border-transparent enabled:cursor-pointer enabled:active:scale-97"
+            className="px-5 py-2.5 rounded-full flex items-center gap-1.5 text-sm font-medium transition-all border bg-surface text-ink-muted border-line cursor-not-allowed enabled:bg-accent enabled:text-white enabled:border-transparent enabled:cursor-pointer enabled:active:scale-97 enabled:hover:opacity-90"
           >
-            Analyse layers{' '}
-            <span className="inline-block transition-transform group-enabled:group-hover:translate-x-0.5">
-              →
-            </span>
+            Analyse layers
+            <Layers size={14} />
           </button>
         </motion.div>
 
@@ -161,7 +160,10 @@ export default function Home() {
               return (
                 <button
                   key={ex.id}
-                  onClick={() => setCss(ex.css)}
+                  onClick={() => {
+                    setCss(ex.css)
+                    router.push('/edit')
+                  }}
                   className="text-left overflow-hidden transition-colors group border border-line rounded-md cursor-pointer"
                 >
                   <div className="w-full aspect-video relative overflow-hidden">

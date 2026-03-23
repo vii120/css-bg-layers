@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
-import { GripVertical, Layers2, Braces } from 'lucide-react'
+import { GripVertical, Layers, Braces, ArrowUpDown } from 'lucide-react'
 import {
   AnimatePresence,
   Reorder,
@@ -115,7 +115,7 @@ const panelVariants = {
 }
 
 export function DemoPlayground() {
-  const [mode, setMode] = useState<'raw' | 'layers'>('raw')
+  const [mode, setMode] = useState<'raw' | 'layers'>('layers')
   const [layers, setLayers] = useState<DemoLayer[]>(INITIAL_LAYERS)
   const previewControls = useAnimationControls()
   const prevOrderRef = useRef(layers.map((l) => l.id).join(','))
@@ -144,27 +144,27 @@ export function DemoPlayground() {
           onClick={() =>
             setMode((prev) => (prev === 'layers' ? 'raw' : 'layers'))
           }
-          className="w-45 text-xs px-4 py-2 rounded-full bg-accent text-white font-mono cursor-pointer relative overflow-hidden"
+          className="w-40 text-xs text-ink-muted hover:text-ink transition-colors border border-line rounded-full px-4 py-1.5 hover:border-ink-muted/40 cursor-pointer"
           whileTap={{ scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 500, damping: 25 }}
         >
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={mode}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ type: 'spring', duration: 0.3 }}
-              className="flex justify-center items-center gap-2 whitespace-nowrap"
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ type: 'spring', duration: 0.25 }}
+              className="flex justify-center items-center gap-1.5 whitespace-nowrap"
             >
               {mode === 'raw' ? (
                 <>
-                  <Layers2 size={14} />
+                  <Layers size={12} />
                   Split into layers
                 </>
               ) : (
                 <>
-                  <Braces size={14} />
+                  <Braces size={12} />
                   View raw CSS
                 </>
               )}
@@ -221,8 +221,8 @@ export function DemoPlayground() {
                     <LayerRow key={layer.id} layer={layer} index={i} />
                   ))}
                 </Reorder.Group>
-                <p className="mt-2 text-[10px] text-ink-muted/40 font-mono text-center">
-                  drag to reorder ↕
+                <p className="mt-2 text-[10px] text-ink-muted/40 font-mono text-center flex justify-center items-center gap-2">
+                  drag to reorder <ArrowUpDown size={12} />
                 </p>
               </motion.div>
             )}
