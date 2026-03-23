@@ -164,7 +164,7 @@ export default function EditPage() {
     : ''
 
   return (
-    <main className="md:h-[calc(100dvh-3.5rem)] w-full mx-auto px-4 md:px-8 py-6 md:py-10 flex flex-col-reverse md:flex-row gap-6 md:gap-8 bg-canvas text-ink">
+    <main className="md:h-[calc(100dvh-4rem)] w-full mx-auto px-4 md:px-8 py-6 md:py-10 flex flex-col-reverse md:flex-row gap-6 md:gap-8 bg-canvas text-ink">
       {error || !layers ? (
         <div className="mx-auto text-sm text-ink-muted py-16 text-center">
           <p>{error}</p>
@@ -278,7 +278,7 @@ export default function EditPage() {
                 <OutputCss layers={visibleLayers} cssVars={cssVars} />
               </div>
             </div>
-            <div className="flex-1 min-h-0 flex items-center justify-center">
+            <div className="md:flex-1 h-75 md:h-auto flex items-center justify-center">
               <motion.div
                 layout
                 style={{

@@ -18,7 +18,7 @@ const DECORATIONS = [
 }`,
   },
   {
-    position: 'top-1/3 left-full ml-8',
+    position: 'top-1/3 left-full ml-5',
     size: 'w-10',
     background:
       'bg-radial-[circle,var(--color-lime-500)_30%,transparent_0] bg-size-[15px_15px] bg-center',
