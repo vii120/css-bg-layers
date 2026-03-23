@@ -34,7 +34,7 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
         >
-          <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-snug relative font-heading">
+          <h1 className="text-3xl md:text-[2.5em] font-semibold tracking-tight leading-snug relative font-heading">
             Break down
             <br />
             CSS backgrounds,
