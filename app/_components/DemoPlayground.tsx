@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useMemo, useState } from 'react'
-import { GripVertical } from 'lucide-react'
+import { GripVertical, Layers2, Braces } from 'lucide-react'
 import { AnimatePresence, Reorder, useDragControls, motion } from 'motion/react'
 import { PreviewCanvas } from './PreviewCanvas'
 
@@ -22,12 +22,12 @@ const INITIAL_LAYERS: DemoLayer[] = [
     id: 2,
     type: 'conic',
     value:
-      'conic-gradient(from 270deg at bottom 1px right 1px, transparent 25%, #fbfaf9 0) center / 40px 40px',
+      'conic-gradient(from 270deg at bottom 1px right 1px, transparent 25%, #d8dbff 0) center / 40px 40px',
   },
   {
     id: 3,
     type: 'linear',
-    value: 'linear-gradient(-45deg, #dadeff, transparent)',
+    value: 'linear-gradient(-45deg, #edf4ff, transparent)',
   },
 ]
 
@@ -47,12 +47,6 @@ function getGradientFn(value: string): string {
   return value
 }
 
-const whileDrag = {
-  scale: 1.015,
-  boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
-  zIndex: 50,
-}
-
 const LayerRow = memo(function LayerRow({
   layer,
   index,
@@ -68,7 +62,11 @@ const LayerRow = memo(function LayerRow({
       dragListener={false}
       dragControls={dragControls}
       className="flex items-center gap-2.5 rounded border border-line bg-canvas px-3 py-2.5 select-none cursor-default"
-      whileDrag={whileDrag}
+      whileDrag={{
+        scale: 1.015,
+        boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
+        zIndex: 50,
+      }}
       initial={{ opacity: 0, x: -6 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{
@@ -117,18 +115,41 @@ export function DemoPlayground() {
   const previewCss = useMemo(() => buildPreviewCss(layers), [layers])
 
   return (
-    <div className="flex flex-col gap-4 items-center">
-      <div className="font-semibold uppercase tracking-wider text-ink-muted">
-        Playground
+    <div className="w-full md:w-fit mx-auto flex flex-col gap-4 items-stretch">
+      <div className="flex items-center justify-between">
+        <div className="font-semibold uppercase tracking-wider text-ink-muted">
+          Playground
+        </div>
+        <button
+          onClick={() =>
+            setMode((prev) => (prev === 'layers' ? 'raw' : 'layers'))
+          }
+          className="w-45 text-xs px-4 py-2 rounded-full bg-accent text-white font-mono cursor-pointer relative overflow-hidden"
+        >
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.div
+              key={mode}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: 'spring', duration: 0.3 }}
+              className="flex justify-center items-center gap-2 whitespace-nowrap"
+            >
+              {mode === 'raw' ? (
+                <>
+                  <Layers2 size={14} />
+                  Split into layers
+                </>
+              ) : (
+                <>
+                  <Braces size={14} />
+                  View raw CSS
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </button>
       </div>
-      <button
-        onClick={() =>
-          setMode((prev) => (prev === 'layers' ? 'raw' : 'layers'))
-        }
-        className="text-xs px-4 py-2 rounded-full bg-accent/30 font-mono cursor-pointer"
-      >
-        {mode === 'raw' ? 'Split into layers' : 'View raw CSS'}
-      </button>
 
       <div className="contents md:flex gap-4 items-center justify-center">
         {/* Left panel */}
