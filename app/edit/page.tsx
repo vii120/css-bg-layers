@@ -195,7 +195,7 @@ export default function EditPage() {
                       ? setHiddenLayers(new Set())
                       : setHiddenLayers(new Set(layers.map((l) => l.index)))
                   }
-                  className="mr-3 flex items-center gap-1 text-xs text-ink-muted/50 hover:text-ink-muted transition-colors cursor-pointer hit-area-2"
+                  className="mr-3 flex items-center gap-1 text-xs text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-2"
                   title={hiddenLayers.size > 0 ? 'Show all' : 'Hide all'}
                 >
                   {hiddenLayers.size > 0 ? (
