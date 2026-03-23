@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Eye, EyeOff, Plus } from 'lucide-react'
 import { motion, Reorder, useDragControls } from 'motion/react'
 import { cn } from '@/lib/utils'
 import {
@@ -180,14 +180,35 @@ export default function EditPage() {
           <div className="md:w-120 flex flex-col gap-4 min-h-0">
             {/* Layers section */}
             <div className="flex-1 min-h-0 flex flex-col gap-2">
-              <h2 className="font-semibold text-sm uppercase tracking-wider text-ink-muted shrink-0">
-                <span className="inline-block relative">
-                  Layers
-                  <span className="absolute bottom-2/5 left-full ml-1 text-xs font-normal scale-90">
-                    ({layers.length})
+              <div className="flex items-center justify-between shrink-0">
+                <h2 className="font-semibold text-sm uppercase tracking-wider text-ink-muted">
+                  <span className="inline-block relative">
+                    Layers
+                    <span className="absolute bottom-2/5 left-full ml-1 text-xs font-normal scale-90">
+                      ({layers.length})
+                    </span>
                   </span>
-                </span>
-              </h2>
+                </h2>
+                <button
+                  onClick={() =>
+                    hiddenLayers.size > 0
+                      ? setHiddenLayers(new Set())
+                      : setHiddenLayers(new Set(layers.map((l) => l.index)))
+                  }
+                  className="mr-3 flex items-center gap-1 text-xs text-ink-muted/50 hover:text-ink-muted transition-colors cursor-pointer hit-area-2"
+                  title={hiddenLayers.size > 0 ? 'Show all' : 'Hide all'}
+                >
+                  {hiddenLayers.size > 0 ? (
+                    <>
+                      <Eye size={14} /> show all
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff size={14} /> hide all
+                    </>
+                  )}
+                </button>
+              </div>
               <Reorder.Group
                 axis="y"
                 values={layers}
@@ -270,9 +291,10 @@ export default function EditPage() {
                     setCss('')
                     router.push('/')
                   }}
-                  className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono"
+                  className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-1.5"
                 >
-                  ← New
+                  <Plus size={14} />
+                  New
                 </button>
                 <OutputCss layers={visibleLayers} cssVars={cssVars} />
               </div>

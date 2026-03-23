@@ -108,12 +108,13 @@ export function LayerCard({
         {/* Raw value + sub-props */}
         <div className="flex-1 px-3.5 py-3 min-w-0 flex flex-col gap-2">
           <textarea
-            className="select-text font-mono text-xs leading-relaxed text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors resize-none break-all max-h-25 overflow-y-auto"
+            className="select-text font-mono text-xs leading-relaxed text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors resize-none break-all max-h-25 overflow-y-auto disabled:pointer-events-none"
             style={{ fieldSizing: 'content' } as React.CSSProperties}
             value={layer.raw}
             onChange={(e) => onUpdate('raw', e.target.value)}
             spellCheck={false}
             rows={1}
+            disabled={!isVisible}
           />
           {subProps.length > 0 && (
             <div>
@@ -121,10 +122,11 @@ export function LayerCard({
                 <div key={label} className="flex gap-2 text-xs items-center">
                   <span className="text-ink-muted shrink-0 w-20">{label}</span>
                   <input
-                    className="select-text font-mono text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors"
+                    className="select-text font-mono text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors disabled:pointer-events-none"
                     value={layer[key] as string}
                     onChange={(e) => onUpdate(key, e.target.value)}
                     spellCheck={false}
+                    disabled={!isVisible}
                   />
                 </div>
               ))}
