@@ -89,7 +89,13 @@ export function HeadingDeco() {
           ref={(el) => {
             elemsRef.current[i] = el
           }}
-          onClick={() => d.css && setCss(d.css)}
+          onClick={() => {
+            if (!d.css) return
+            setCss(d.css)
+            document
+              .getElementById('css-input')
+              ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }}
           className={cn(
             'absolute will-change-transform',
             d.css ? 'cursor-pointer' : 'cursor-default',
