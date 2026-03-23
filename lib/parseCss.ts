@@ -128,6 +128,21 @@ export function layerTypeLabel(type: LayerType): string {
 }
 
 /**
+ * Split a shorthand layer value into the image function and any trailing tokens
+ * (position, size, repeat, etc. that follow the closing paren of the image function).
+ */
+function splitLayerImageAndTrailing(raw: string): { imageValue: string; trailing: string } {
+  const lastParen = raw.lastIndexOf(')')
+  if (lastParen === -1 || lastParen >= raw.length - 1) {
+    return { imageValue: raw, trailing: '' }
+  }
+  return {
+    imageValue: raw.slice(0, lastParen + 1).trim(),
+    trailing: raw.slice(lastParen + 1).trim(),
+  }
+}
+
+/**
  * Parse CSS input into an ordered array of background layers (top → bottom).
  * Returns null if no background-related properties are found.
  */
@@ -168,19 +183,35 @@ export function parseCssInput(input: string): BgLayer[] | null {
     const cycle = <T,>(arr: T[], i: number): T | undefined =>
       arr.length > 0 ? arr[i % arr.length] : undefined
 
-    return layers.map((raw, i) => ({
-      index: i,
-      raw,
-      type: detectLayerType(raw),
-      position: cycle(positions, i),
-      size: cycle(sizes, i),
-      repeat: cycle(repeats, i),
-      attachment: cycle(attachments, i),
-      origin: cycle(origins, i),
-      clip: cycle(clips, i),
-      blendMode: cycle(blendModes, i),
-      color: i === count - 1 ? bgColor : undefined,
-    }))
+    // When supplementary background-* properties are declared alongside the shorthand,
+    // the raw layer string may contain embedded position tokens (e.g. `gradient(...) 25px 25px`).
+    // Split them out so reconstruction doesn't duplicate position/size data.
+    const hasSuppProps = [bgPosition, bgSize, bgRepeat, bgAttachment, bgOrigin, bgClip, bgBlendMode].some(Boolean)
+
+    return layers.map((rawLayer, i) => {
+      let raw = rawLayer
+      let embeddedPosition: string | undefined
+
+      if (hasSuppProps) {
+        const { imageValue, trailing } = splitLayerImageAndTrailing(rawLayer)
+        raw = imageValue
+        if (trailing) embeddedPosition = trailing
+      }
+
+      return {
+        index: i,
+        raw,
+        type: detectLayerType(raw),
+        position: cycle(positions, i) ?? embeddedPosition,
+        size: cycle(sizes, i),
+        repeat: cycle(repeats, i),
+        attachment: cycle(attachments, i),
+        origin: cycle(origins, i),
+        clip: cycle(clips, i),
+        blendMode: cycle(blendModes, i),
+        color: i === count - 1 ? bgColor : undefined,
+      }
+    })
   }
 
   // Separate background-* properties
