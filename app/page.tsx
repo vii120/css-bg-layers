@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { motion } from 'motion/react'
 import { CssEditor } from './CssEditor'
 import { PreviewCanvas } from './_components/PreviewCanvas'
+import { HeadingDeco } from './_components/HeadingDeco'
 import { EXAMPLES } from '@/lib/examples'
 import { useCssStore } from '@/lib/store'
 import { parseCssInput } from '@/lib/parseCss'
@@ -41,10 +42,7 @@ export default function Home() {
             <span className="relative z-1 px-2  before:absolute before:inset-0 before:rounded-sm before:bg-linear-[80deg,var(--color-blue-300),var(--color-blue-100)_5%_30%,var(--color-blue-200)_50%_95%,var(--color-blue-400)] before:-skew-x-3 before:-skew-y-1 before:-z-1">
               layer by layer
             </span>
-            {/* Deco */}
-            <div className="absolute -top-5 right-9/10 w-10 aspect-square bg-conic-[from_270deg_at_bottom_2px_right_2px,transparent_25%,var(--color-amber-400)_0] bg-size-[15px_15px] bg-center -rotate-15 opacity-75 transform-[translateZ(0)]"></div>
-            <div className="absolute top-1/3 left-full ml-6 w-10 aspect-square bg-radial-[circle,var(--color-lime-500)_30%,transparent_0] bg-size-[15px_15px] bg-center rotate-15 opacity-75 transform-[translateZ(0)]"></div>
-            <div className="absolute bottom-0 right-full w-[45px] aspect-square bg-conic-[var(--color-red-400)_25%,transparent_25%_50%,var(--color-red-400)_50%_75%,transparent_75%] bg-size-[30px_30px] -rotate-20 opacity-75 transform-[translateZ(0)]"></div>
+            <HeadingDeco />
           </h1>
           <p className="text-lg leading-relaxed text-ink-muted">
             Dive into each layer and see how it fits together.
