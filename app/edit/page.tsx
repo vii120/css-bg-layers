@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, Eye, EyeOff, Plus } from 'lucide-react'
+import { ChevronDown, Eye, EyeOff, MoveLeft } from 'lucide-react'
 import { motion, AnimatePresence, Reorder, useDragControls } from 'motion/react'
 import { cn } from '@/lib/utils'
 import {
@@ -274,7 +274,9 @@ export default function EditPage() {
                             <input
                               className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas transition-colors"
                               value={v.value}
-                              onChange={(e) => updateVar(v.name, e.target.value)}
+                              onChange={(e) =>
+                                updateVar(v.name, e.target.value)
+                              }
                               spellCheck={false}
                             />
                           </div>
@@ -301,8 +303,8 @@ export default function EditPage() {
                   }}
                   className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-1.5"
                 >
-                  <Plus size={14} />
-                  New
+                  <MoveLeft size={14} />
+                  New analysis
                 </button>
                 <OutputCss layers={visibleLayers} cssVars={cssVars} />
               </div>
