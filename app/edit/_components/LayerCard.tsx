@@ -10,7 +10,10 @@ import { cn } from '@/lib/utils'
  * Build a self-contained CSS snippet to preview a single layer.
  * Preserves CSS custom properties from the live cssVars state.
  */
-function buildLayerCss(layer: BgLayer, cssVars: { name: string; value: string }[]): string {
+function buildLayerCss(
+  layer: BgLayer,
+  cssVars: { name: string; value: string }[],
+): string {
   const customProps = cssVars.map((v) => `${v.name}: ${v.value}`).join('; ')
   const bgValue = reconstructBackground([layer])
   return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue} }`
@@ -95,7 +98,7 @@ export function LayerCard({
       {/* Body: square preview + content */}
       <div className="flex">
         {/* Square swatch */}
-        <div className="w-20 min-h-20 shrink-0 border-r border-line overflow-hidden">
+        <div className="w-20 min-h-20 shrink-0 border-r border-line overflow-hidden bg-[repeating-conic-gradient(var(--color-surface)_0%_25%,transparent_0%_50%)] bg-size-[15px_15px]">
           <PreviewCanvas css={layerCss} className="w-full h-full" />
         </div>
 
