@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ChevronDown, Eye, EyeOff, Plus } from 'lucide-react'
-import { motion, Reorder, useDragControls } from 'motion/react'
+import { motion, AnimatePresence, Reorder, useDragControls } from 'motion/react'
 import { cn } from '@/lib/utils'
 import {
   parseCssInput,
@@ -120,7 +120,7 @@ export default function EditPage() {
       setError('No CSS found. Go back and paste some CSS.')
       return
     }
-const parsed = parseCssInput(stored)
+    const parsed = parseCssInput(stored)
     if (!parsed || parsed.length === 0) {
       setError(
         'Could not find any background layers. Check that your CSS includes a background property.',
@@ -232,7 +232,7 @@ const parsed = parseCssInput(stored)
 
             {/* Variables section */}
             {cssVars.length > 0 && (
-              <div className="flex flex-col gap-2 shrink-0">
+              <div className="max-h-50 flex flex-col gap-2 shrink-0">
                 <button
                   onClick={() => setVarsOpen((v) => !v)}
                   className="flex items-center gap-1.5 cursor-pointer"
@@ -253,26 +253,36 @@ const parsed = parseCssInput(stored)
                     )}
                   />
                 </button>
-                {varsOpen && (
-                  <div className="max-h-100 overflow-auto flex flex-col gap-1">
-                    {cssVars.map((v) => (
-                      <div
-                        key={v.name}
-                        className="shrink-0 flex gap-3 text-xs font-mono px-3 py-1.5 rounded bg-surface border border-line"
-                      >
-                        <span className="text-ink-muted shrink-0">
-                          {v.name}
-                        </span>
-                        <input
-                          className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas transition-colors"
-                          value={v.value}
-                          onChange={(e) => updateVar(v.name, e.target.value)}
-                          spellCheck={false}
-                        />
+                <AnimatePresence initial={false}>
+                  {varsOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="max-h-50 overflow-auto flex flex-col gap-1">
+                        {cssVars.map((v) => (
+                          <div
+                            key={v.name}
+                            className="shrink-0 flex gap-3 text-xs font-mono px-3 py-1.5 rounded bg-surface border border-line"
+                          >
+                            <span className="text-ink-muted shrink-0">
+                              {v.name}
+                            </span>
+                            <input
+                              className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas transition-colors"
+                              value={v.value}
+                              onChange={(e) => updateVar(v.name, e.target.value)}
+                              spellCheck={false}
+                            />
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
           </div>

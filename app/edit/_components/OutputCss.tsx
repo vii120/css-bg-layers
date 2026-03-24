@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { CopyButton } from './CopyButton'
-import { SquareCode } from 'lucide-react'
+import { Braces } from 'lucide-react'
 
 function minimalCycle(values: string[]): string[] {
   for (let k = 1; k <= Math.floor(values.length / 2); k++) {
@@ -22,16 +22,22 @@ function minimalCycle(values: string[]): string[] {
   return values
 }
 
-function buildOutput(layers: BgLayer[], cssVars: { name: string; value: string }[]): string {
+function buildOutput(
+  layers: BgLayer[],
+  cssVars: { name: string; value: string }[],
+): string {
   const customProps = cssVars.map((v) => `  ${v.name}: ${v.value};`).join('\n')
 
   const bgValue = reconstructBackground(layers)
 
   // blend-mode can't go in the shorthand — output separately if present
-  const blendModes = layers.map((l) => l.blendMode).filter((v): v is string => !!v)
-  const blendModeDecl = blendModes.length === layers.length
-    ? `  background-blend-mode: ${minimalCycle(blendModes).join(', ')};`
-    : ''
+  const blendModes = layers
+    .map((l) => l.blendMode)
+    .filter((v): v is string => !!v)
+  const blendModeDecl =
+    blendModes.length === layers.length
+      ? `  background-blend-mode: ${minimalCycle(blendModes).join(', ')};`
+      : ''
 
   return [customProps, `  background:\n    ${bgValue};`, blendModeDecl]
     .filter(Boolean)
@@ -58,7 +64,7 @@ export function OutputCss({
           onClick={handleOpen}
           className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-2"
         >
-          <SquareCode size={14} /> View CSS
+          <Braces size={14} /> View CSS
         </button>
       </DialogTrigger>
       <DialogContent
