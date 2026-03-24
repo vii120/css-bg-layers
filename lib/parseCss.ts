@@ -145,6 +145,28 @@ function hasTopLevelSpace(value: string): boolean {
 }
 
 /**
+ * Split a string by spaces at depth 0 (outside parentheses).
+ */
+function splitTopLevelSpaces(value: string): string[] {
+  const parts: string[] = []
+  let depth = 0
+  let start = 0
+  for (let i = 0; i < value.length; i++) {
+    const ch = value[i]
+    if (ch === '(') depth++
+    else if (ch === ')') depth--
+    else if (ch === ' ' && depth === 0) {
+      const token = value.slice(start, i).trim()
+      if (token) parts.push(token)
+      start = i + 1
+    }
+  }
+  const last = value.slice(start).trim()
+  if (last) parts.push(last)
+  return parts
+}
+
+/**
  * Returns true if the token looks like a CSS color value:
  * - Hex notation (#rgb, #rrggbb, etc.)
  * - Color functions (rgb, hsl, oklch, etc.) or var() which most commonly
@@ -264,15 +286,20 @@ export function parseCssInput(input: string): BgLayer[] | null {
       // a supplementary `background-size`, where putting the color before `/size`
       // would produce invalid CSS.
       let resolvedColor = i === count - 1 ? bgColor : undefined
-      if (
-        i === count - 1 &&
-        !cycle(positions, i) &&
-        embeddedPosition &&
-        !hasTopLevelSpace(embeddedPosition) &&
-        looksLikeColor(embeddedPosition)
-      ) {
-        resolvedColor = embeddedPosition
-        embeddedPosition = undefined
+      if (i === count - 1 && !cycle(positions, i) && embeddedPosition) {
+        if (!hasTopLevelSpace(embeddedPosition) && looksLikeColor(embeddedPosition)) {
+          // Single trailing token that looks like a color
+          resolvedColor = embeddedPosition
+          embeddedPosition = undefined
+        } else if (hasTopLevelSpace(embeddedPosition)) {
+          // Multiple trailing tokens — check if the last one is a color
+          const tokens = splitTopLevelSpaces(embeddedPosition)
+          const lastToken = tokens[tokens.length - 1]
+          if (looksLikeColor(lastToken)) {
+            resolvedColor = lastToken
+            embeddedPosition = tokens.slice(0, -1).join(' ') || undefined
+          }
+        }
       }
 
       return {
