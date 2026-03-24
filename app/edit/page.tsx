@@ -2,52 +2,49 @@
 
 import type { BgLayer } from '@/lib/parseCss'
 import { sendGAEvent } from '@next/third-parties/google'
-import { ChevronDown, Eye, EyeClosed, MoveLeft } from 'lucide-react'
-import { AnimatePresence, motion, Reorder, useDragControls } from 'motion/react'
+import { Eye, EyeClosed, MoveLeft } from 'lucide-react'
+import { motion, Reorder, useDragControls } from 'motion/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
-import {
-
-  parseCssInput,
-  reconstructBackground,
-} from '@/lib/parseCss'
+import { parseCssInput, reconstructBackground } from '@/lib/parseCss'
 import { useCssStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
+import { AspectRatioPicker, ASPECT_RATIOS } from './_components/AspectRatioPicker'
+import type { AspectRatio } from './_components/AspectRatioPicker'
+import { BackgroundColorCard } from './_components/BackgroundColorCard'
 import { LayerCard } from './_components/LayerCard'
 import { OutputCss } from './_components/OutputCss'
+import { VariablesPanel } from './_components/VariablesPanel'
+import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 
 function buildFilteredPreviewCss(
-  cssVars: { name: string, value: string }[],
+  cssVars: { name: string; value: string }[],
   layers: BgLayer[],
   hiddenIndices: Set<number>,
   hideColor: boolean,
 ): string {
-  const customProps = cssVars.map(v => `${v.name}: ${v.value}`).join('; ')
+  const customProps = cssVars.map((v) => `${v.name}: ${v.value}`).join('; ')
 
-  const visibleLayers = layers.filter(l => !hiddenIndices.has(l.index))
+  const visibleLayers = layers.filter((l) => !hiddenIndices.has(l.index))
   const color = !hideColor
     ? layers.reduce<string | undefined>((acc, l) => l.color ?? acc, undefined)
     : undefined
 
-  if (visibleLayers.length === 0 && !color)
-    return ''
+  if (visibleLayers.length === 0 && !color) return ''
 
   const decls: string[] = []
 
   if (visibleLayers.length > 0) {
     decls.push(`background: ${reconstructBackground(visibleLayers)}`)
-  }
-  else {
+  } else {
     // No image layers — reset background so a previous render doesn't bleed through
     decls.push('background: none')
   }
 
-  if (color)
-    decls.push(`background-color: ${color}`)
+  if (color) decls.push(`background-color: ${color}`)
 
-  const blendModes = visibleLayers.map(l => l.blendMode).filter(Boolean)
+  const blendModes = visibleLayers.map((l) => l.blendMode).filter(Boolean)
   if (blendModes.length > 0)
     decls.push(`background-blend-mode: ${blendModes.join(', ')}`)
 
@@ -55,10 +52,10 @@ function buildFilteredPreviewCss(
   return `div { ${customPropsStr}${decls.join('; ')} }`
 }
 
-function extractCssVariables(css: string): { name: string, value: string }[] {
+function extractCssVariables(css: string): { name: string; value: string }[] {
   const block = css.trim().match(/\{([\s\S]*)\}/)
   const inner = block ? block[1] : css
-  return Array.from(inner.matchAll(/(--[\w-]+)\s*:\s*([^;]+)/g), m => ({
+  return Array.from(inner.matchAll(/(--[\w-]+)\s*:\s*([^;]+)/g), (m) => ({
     name: m[1].trim(),
     value: m[2].trim(),
   }))
@@ -76,7 +73,7 @@ function DraggableLayerCard({
   layer: BgLayer
   order: number
   total: number
-  cssVars: { name: string, value: string }[]
+  cssVars: { name: string; value: string }[]
   isVisible: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
@@ -114,24 +111,14 @@ function DraggableLayerCard({
   )
 }
 
-const ASPECT_RATIOS = [
-  { label: '16:9', ratio: '16 / 9' },
-  { label: '4:3', ratio: '4 / 3' },
-  { label: '1:1', ratio: '1 / 1' },
-  { label: '9:16', ratio: '9 / 16' },
-] as const
-
 export default function EditPage() {
   const { css: stored } = useCssStore()
   const router = useRouter()
   const [layers, setLayers] = useState<BgLayer[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [hiddenLayers, setHiddenLayers] = useState<Set<number>>(new Set())
-  const [varsOpen, setVarsOpen] = useState(true)
-  const [cssVars, setCssVars] = useState<{ name: string, value: string }[]>([])
-  const [aspectRatio, setAspectRatio] = useState<
-    (typeof ASPECT_RATIOS)[number]
-  >(ASPECT_RATIOS[0])
+  const [cssVars, setCssVars] = useState<{ name: string; value: string }[]>([])
+  const [aspectRatio, setAspectRatio] = useState<AspectRatio>(ASPECT_RATIOS[0])
   const [colorHidden, setColorHidden] = useState(false)
 
   useEffect(() => {
@@ -151,8 +138,8 @@ export default function EditPage() {
   }, [stored])
 
   function updateVar(name: string, newValue: string) {
-    setCssVars(prev =>
-      prev.map(v => (v.name === name ? { ...v, value: newValue } : v)),
+    setCssVars((prev) =>
+      prev.map((v) => (v.name === name ? { ...v, value: newValue } : v)),
     )
   }
 
@@ -161,8 +148,8 @@ export default function EditPage() {
     field: keyof BgLayer,
     value: string,
   ) {
-    setLayers(prev =>
-      prev!.map(l => (l.index === layerIndex ? { ...l, [field]: value } : l)),
+    setLayers((prev) =>
+      prev!.map((l) => (l.index === layerIndex ? { ...l, [field]: value } : l)),
     )
   }
 
@@ -174,7 +161,7 @@ export default function EditPage() {
     })
   }
 
-  const visibleLayers = layers?.filter(l => !hiddenLayers.has(l.index)) ?? []
+  const visibleLayers = layers?.filter((l) => !hiddenLayers.has(l.index)) ?? []
   const previewCss = layers
     ? buildFilteredPreviewCss(cssVars, layers, hiddenLayers, colorHidden)
     : ''
@@ -212,30 +199,27 @@ export default function EditPage() {
                     if (hiddenLayers.size > 0 || colorHidden) {
                       setHiddenLayers(new Set())
                       setColorHidden(false)
-                    }
-                    else {
-                      setHiddenLayers(new Set(layers.map(l => l.index)))
+                    } else {
+                      setHiddenLayers(new Set(layers.map((l) => l.index)))
                       setColorHidden(true)
                     }
                   }}
                   className="mr-3 flex items-center gap-1 text-xs text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-2"
-                  title={hiddenLayers.size > 0 || colorHidden ? 'Show all' : 'Hide all'}
+                  title={
+                    hiddenLayers.size > 0 || colorHidden
+                      ? 'Show all'
+                      : 'Hide all'
+                  }
                 >
-                  {hiddenLayers.size > 0 || colorHidden
-                    ? (
-                        <>
-                          <Eye size={14} />
-                          {' '}
-                          show all
-                        </>
-                      )
-                    : (
-                        <>
-                          <EyeClosed size={14} />
-                          {' '}
-                          hide all
-                        </>
-                      )}
+                  {hiddenLayers.size > 0 || colorHidden ? (
+                    <>
+                      <Eye size={14} /> show all
+                    </>
+                  ) : (
+                    <>
+                      <EyeClosed size={14} /> hide all
+                    </>
+                  )}
                 </button>
               </div>
               <Reorder.Group
@@ -254,69 +238,21 @@ export default function EditPage() {
                     isVisible={!hiddenLayers.has(layer.index)}
                     onToggleVisibility={() => toggleLayer(layer.index)}
                     onUpdate={(field, value) =>
-                      updateLayer(layer.index, field, value)}
+                      updateLayer(layer.index, field, value)
+                    }
                   />
                 ))}
                 {/* Background color — always pinned to last layer */}
                 {(() => {
-                  const layerWithColor = layers.find(l => l.color != null)
-                  if (!layerWithColor)
-                    return null
+                  const layerWithColor = layers.find((l) => l.color != null)
+                  if (!layerWithColor) return null
                   return (
-                    <div
-                      className={cn(
-                        'shrink-0 rounded-md border border-line bg-canvas overflow-hidden transition-opacity',
-                        colorHidden && 'opacity-40',
-                      )}
-                    >
-                      <div className="px-3.5 py-2 border-b border-line bg-surface flex items-center justify-between">
-                        <span className="text-xs font-medium text-ink-muted">
-                          background-color
-                        </span>
-                        <motion.button
-                          onClick={() => setColorHidden(v => !v)}
-                          className="text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-3"
-                          aria-label={colorHidden ? 'Show color' : 'Hide color'}
-                          whileTap={{ scale: 0.8 }}
-                          whileHover={{ scale: 1.15 }}
-                          transition={{ duration: 0.12 }}
-                        >
-                          {colorHidden
-                            ? (
-                                <EyeClosed size={14} />
-                              )
-                            : (
-                                <Eye size={14} />
-                              )}
-                        </motion.button>
-                      </div>
-                      <div className="flex">
-                        <div className="w-20 min-h-20 shrink-0 border-r border-line overflow-hidden">
-                          <PreviewCanvas
-                            css={`
-                              div {
-                                background: ${layerWithColor.color};
-                              }
-                            `}
-                            className="w-full h-full"
-                          />
-                        </div>
-                        <div className="flex-1 px-3.5 py-3 min-w-0 flex items-center">
-                          <input
-                            className="select-text font-mono text-xs text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors disabled:pointer-events-none"
-                            value={layerWithColor.color!}
-                            onChange={e =>
-                              updateLayer(
-                                layerWithColor.index,
-                                'color',
-                                e.target.value,
-                              )}
-                            spellCheck={false}
-                            disabled={colorHidden}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    <BackgroundColorCard
+                      layer={layerWithColor}
+                      colorHidden={colorHidden}
+                      onToggleVisibility={() => setColorHidden((v) => !v)}
+                      onUpdate={(field, value) => updateLayer(layerWithColor.index, field, value)}
+                    />
                   )
                 })()}
               </Reorder.Group>
@@ -324,60 +260,7 @@ export default function EditPage() {
 
             {/* Variables section */}
             {cssVars.length > 0 && (
-              <div className="max-h-50 flex flex-col gap-3 shrink-0">
-                <button
-                  onClick={() => {
-                    sendGAEvent('event', 'toggle_variables_panel')
-                    setVarsOpen(v => !v)
-                  }}
-                  className="flex items-center gap-1.5 cursor-pointer pl-3 border-l-3 border-accent py-0.5"
-                >
-                  <h2 className="font-semibold text-sm uppercase tracking-wider text-ink flex items-center gap-2">
-                    Variables
-                    <span className="text-xs font-normal normal-case tracking-normal px-1.5 py-0.5 rounded bg-surface text-ink-muted">
-                      {cssVars.length}
-                    </span>
-                  </h2>
-                  <ChevronDown
-                    size={12}
-                    className={cn(
-                      'ml-auto text-ink-muted transition-transform',
-                      !varsOpen && '-rotate-90',
-                    )}
-                  />
-                </button>
-                <AnimatePresence initial={false}>
-                  {varsOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
-                      className="overflow-hidden"
-                    >
-                      <div className="max-h-50 overflow-auto flex flex-col gap-1">
-                        {cssVars.map(v => (
-                          <div
-                            key={v.name}
-                            className="shrink-0 flex gap-3 text-xs font-mono px-3 py-1.5 rounded bg-surface border border-line"
-                          >
-                            <span className="text-ink-muted shrink-0">
-                              {v.name}
-                            </span>
-                            <input
-                              className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas transition-colors"
-                              value={v.value}
-                              onChange={e =>
-                                updateVar(v.name, e.target.value)}
-                              spellCheck={false}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              <VariablesPanel cssVars={cssVars} onUpdate={updateVar} />
             )}
           </div>
 
@@ -398,7 +281,11 @@ export default function EditPage() {
                   <MoveLeft size={14} />
                   New analysis
                 </button>
-                <OutputCss layers={visibleLayers} cssVars={cssVars} hideColor={colorHidden} />
+                <OutputCss
+                  layers={visibleLayers}
+                  cssVars={cssVars}
+                  hideColor={colorHidden}
+                />
               </div>
             </div>
             <div className="md:flex-1 h-75 md:h-auto flex items-center justify-center">
@@ -418,27 +305,7 @@ export default function EditPage() {
                 <PreviewCanvas css={previewCss} className="w-full h-full" />
               </motion.div>
             </div>
-            <div className="flex justify-center items-center gap-1 shrink-0">
-              {ASPECT_RATIOS.map(r => (
-                <button
-                  key={r.label}
-                  onClick={() => {
-                    sendGAEvent('event', 'change_aspect_ratio', {
-                      name: r.label,
-                    })
-                    setAspectRatio(r)
-                  }}
-                  className={cn(
-                    'px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer',
-                    r.label === aspectRatio.label
-                      ? 'bg-accent text-white'
-                      : 'text-ink-muted hover:text-ink hover:bg-surface',
-                  )}
-                >
-                  {r.label}
-                </button>
-              ))}
-            </div>
+            <AspectRatioPicker current={aspectRatio} onChange={setAspectRatio} />
           </div>
         </>
       )}

@@ -42,17 +42,13 @@ export function extractDeclarations(input: string): string {
 /**
  * Parse CSS declaration block into a property map.
  * Skips CSS custom properties (--foo: bar).
- * Handles multi-line values by joining them before splitting on `;`.
  */
 function parseDeclarations(declarations: string): Record<string, string> {
   const props: Record<string, string> = {}
 
-  // Strip CSS comments before parsing so inline comments (e.g. `--s: 20px; /* note */\n background:`)
-  // don't bleed into the next property name.
+  // Strip CSS comments so inline comments don't bleed into the next property name.
   const cleaned = declarations.replace(/\/\*[\s\S]*?\*\//g, '')
 
-  // Split on semicolons. Values can span multiple lines but don't contain semicolons
-  // (edge case: content property — not relevant here)
   const lines = cleaned.split(';')
 
   for (const line of lines) {
@@ -105,8 +101,6 @@ export interface BgLayer {
 }
 
 export function detectLayerType(value: string): LayerType {
-  // Scan past leading position/color tokens to find the image function
-  // For simple cases, just look for the first '(' to find the function name
   const fnMatch = value.match(/([a-z-]+)\s*\(/)
   if (fnMatch) {
     const fn = fnMatch[1].toLowerCase()
@@ -261,14 +255,15 @@ function splitLayerImageAndTrailing(raw: string): { imageValue: string, trailing
   return { imageValue: raw, trailing: '' }
 }
 
-/**
- * Parse CSS input into an ordered array of background layers (top → bottom).
- * Returns null if no background-related properties are found.
- */
+/** Cycles through an array by index, matching CSS spec cycling behavior for multi-layer properties. */
 function cycle<T>(arr: T[], i: number): T | undefined {
   return arr.length > 0 ? arr[i % arr.length] : undefined
 }
 
+/**
+ * Parse CSS input into an ordered array of background layers (top → bottom).
+ * Returns null if no background-related properties are found.
+ */
 export function parseCssInput(input: string): BgLayer[] | null {
   if (!input.trim())
     return null
@@ -291,9 +286,8 @@ export function parseCssInput(input: string): BgLayer[] | null {
     return null
 
   if (bgShorthand) {
-    // background shorthand: each comma-separated segment is a full layer.
-    // Also pick up any separate background-* properties that supplement the shorthand
-    // (e.g. `background-size` declared alongside a `background:` shorthand).
+    // Each comma-separated segment is a full layer. Separate background-* properties
+    // declared alongside the shorthand (e.g. `background-size`) supplement per-layer.
     const layers = splitTopLevelCommas(bgShorthand)
     const count = layers.length
 
@@ -305,11 +299,10 @@ export function parseCssInput(input: string): BgLayer[] | null {
     const clips = bgClip ? splitTopLevelCommas(bgClip) : []
     const blendModes = bgBlendMode ? splitTopLevelCommas(bgBlendMode) : []
 
-    // When supplementary background-* properties are declared alongside the shorthand,
-    // the raw layer string may contain embedded position tokens (e.g. `gradient(...) 25px 25px`).
-    // Split them out so reconstruction doesn't duplicate position/size data.
-    // blend-mode is excluded: it's not part of the `background` shorthand so it can't
-    // appear as an embedded trailing token in a layer value.
+    // If supplementary properties are present, the raw layer string may contain embedded
+    // trailing tokens (e.g. `gradient(...) 25px 25px`). Split them out so reconstruction
+    // doesn't duplicate position/size data. blend-mode is excluded — it's not part of
+    // the `background` shorthand and can't appear as an embedded token.
     const hasSuppProps = [bgPosition, bgSize, bgRepeat, bgAttachment, bgOrigin, bgClip].some(Boolean)
 
     return layers.map((rawLayer, i) => {
@@ -323,16 +316,12 @@ export function parseCssInput(input: string): BgLayer[] | null {
           embeddedPosition = trailing
       }
 
-      // For the last layer: if there's no explicit separate position and the
-      // embedded trailing is a single color-like token (no top-level spaces),
-      // treat it as the background-color rather than a position. This handles
-      // patterns like `gradient(...) var(--c)` or `gradient(...) #hex` alongside
-      // a supplementary `background-size`, where putting the color before `/size`
-      // would produce invalid CSS.
+      // On the last layer, if there's no explicit position and the embedded trailing
+      // looks like a color, treat it as background-color. Placing a color before
+      // `/size` would produce invalid CSS (e.g. `gradient(...) var(--c) / 50px`).
       let resolvedColor = i === count - 1 ? bgColor : undefined
       if (i === count - 1 && !cycle(positions, i) && embeddedPosition) {
         if (!hasTopLevelSpace(embeddedPosition) && looksLikeColor(embeddedPosition)) {
-          // Single trailing token that looks like a color
           resolvedColor = embeddedPosition
           embeddedPosition = undefined
         }
@@ -390,11 +379,7 @@ export function parseCssInput(input: string): BgLayer[] | null {
   }))
 }
 
-/**
- * Reconstruct a background shorthand value from parsed layers.
- * For shorthand-parsed layers, returns the original raw values joined by comma.
- * For separately-parsed layers, builds a shorthand per layer.
- */
+/** Reconstruct a `background` shorthand string from parsed layers. */
 export function reconstructBackground(layers: BgLayer[]): string {
   return layers.map((l) => {
     const parts: string[] = [l.raw]
