@@ -51,7 +51,7 @@ export function VariablesPanel({ cssVars, onUpdate }: Props) {
                 >
                   <span className="text-ink-muted shrink-0">{v.name}</span>
                   <input
-                    className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas transition-colors"
+                    className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors"
                     value={v.value}
                     onChange={e => onUpdate(v.name, e.target.value)}
                     spellCheck={false}

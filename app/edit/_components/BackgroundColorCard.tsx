@@ -43,7 +43,7 @@ export function BackgroundColorCard({ layer, colorHidden, onToggleVisibility, on
         </div>
         <div className="flex-1 px-3.5 py-3 min-w-0 flex items-center">
           <input
-            className="select-text font-mono text-xs text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors disabled:pointer-events-none"
+            className="select-text font-mono text-xs text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors disabled:pointer-events-none"
             value={layer.color!}
             onChange={e => onUpdate('color', e.target.value)}
             spellCheck={false}

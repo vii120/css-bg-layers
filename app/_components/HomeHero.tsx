@@ -16,7 +16,7 @@ export function HomeHero() {
         <br />
         CSS backgrounds,
         <br />
-        <span className="relative z-1 px-2  before:absolute before:inset-0 before:rounded-sm before:bg-linear-[80deg,var(--color-blue-300),var(--color-blue-100)_5%_30%,var(--color-blue-200)_50%_95%,var(--color-blue-400)] before:-skew-x-3 before:-skew-y-1 before:-z-1">
+        <span className="relative z-1 px-2 before:absolute before:inset-0 before:rounded-sm before:bg-linear-[80deg,var(--color-blue-300),var(--color-blue-100)_5%_30%,var(--color-blue-200)_50%_95%,var(--color-blue-400)] before:-skew-x-3 before:-skew-y-1 before:-z-1">
           layer by layer
         </span>
         <HeadingDeco />

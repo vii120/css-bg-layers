@@ -78,7 +78,6 @@ export function OutputCss({
           className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-2"
         >
           <Braces size={14} />
-          {' '}
           View CSS
         </button>
       </DialogTrigger>

@@ -144,7 +144,7 @@ export function DemoPlayground() {
   return (
     <div className="w-full md:w-fit mx-auto flex flex-col gap-4 items-stretch">
       <div className="flex items-center justify-between">
-        <div className="font-semibold uppercase tracking-wider text-ink-muted">
+        <div className="text-sm font-semibold uppercase tracking-wider text-ink-muted">
           Playground
         </div>
         <motion.button

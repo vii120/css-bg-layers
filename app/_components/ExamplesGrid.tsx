@@ -19,7 +19,7 @@ export function ExamplesGrid() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
     >
-      <p className="font-semibold uppercase tracking-wider text-ink-muted mb-5">
+      <p className="text-sm font-semibold uppercase tracking-wider text-ink-muted mb-5">
         Try an example
       </p>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">

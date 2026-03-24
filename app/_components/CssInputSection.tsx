@@ -43,7 +43,7 @@ export function CssInputSection({
         {/* Input */}
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline justify-between">
-            <span className="font-semibold uppercase tracking-wider text-ink-muted">
+            <span className="text-sm font-semibold uppercase tracking-wider text-ink-muted">
               CSS input
             </span>
             <button
@@ -69,7 +69,7 @@ export function CssInputSection({
 
         {/* Preview */}
         <div className="flex flex-col gap-2">
-          <span className="font-semibold uppercase tracking-wider text-ink-muted">
+          <span className="text-sm font-semibold uppercase tracking-wider text-ink-muted">
             Preview
           </span>
           <div className="h-64 rounded-md overflow-hidden relative border border-line">

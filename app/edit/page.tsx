@@ -7,16 +7,19 @@ import { motion, Reorder, useDragControls } from 'motion/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import { parseCssInput, reconstructBackground } from '@/lib/parseCss'
 import { useCssStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
-import { AspectRatioPicker, ASPECT_RATIOS } from './_components/AspectRatioPicker'
+import {
+  AspectRatioPicker,
+  ASPECT_RATIOS,
+} from './_components/AspectRatioPicker'
 import type { AspectRatio } from './_components/AspectRatioPicker'
 import { BackgroundColorCard } from './_components/BackgroundColorCard'
 import { LayerCard } from './_components/LayerCard'
 import { OutputCss } from './_components/OutputCss'
 import { VariablesPanel } from './_components/VariablesPanel'
-import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 
 function buildFilteredPreviewCss(
   cssVars: { name: string; value: string }[],
@@ -251,7 +254,9 @@ export default function EditPage() {
                       layer={layerWithColor}
                       colorHidden={colorHidden}
                       onToggleVisibility={() => setColorHidden((v) => !v)}
-                      onUpdate={(field, value) => updateLayer(layerWithColor.index, field, value)}
+                      onUpdate={(field, value) =>
+                        updateLayer(layerWithColor.index, field, value)
+                      }
                     />
                   )
                 })()}
@@ -288,7 +293,7 @@ export default function EditPage() {
                 />
               </div>
             </div>
-            <div className="md:flex-1 h-75 md:h-auto flex items-center justify-center">
+            <div className="md:flex-1 h-75 md:h-auto flex items-center justify-center overflow-hidden">
               <motion.div
                 layout
                 style={{
@@ -305,7 +310,10 @@ export default function EditPage() {
                 <PreviewCanvas css={previewCss} className="w-full h-full" />
               </motion.div>
             </div>
-            <AspectRatioPicker current={aspectRatio} onChange={setAspectRatio} />
+            <AspectRatioPicker
+              current={aspectRatio}
+              onChange={setAspectRatio}
+            />
           </div>
         </>
       )}
