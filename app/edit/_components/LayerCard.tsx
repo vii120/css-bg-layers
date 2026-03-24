@@ -3,7 +3,7 @@
 import { Eye, EyeClosed, GripVertical } from 'lucide-react'
 import { motion, type DragControls } from 'motion/react'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
-import type { BgLayer } from '@/lib/parseCss'
+import { reconstructBackground, type BgLayer } from '@/lib/parseCss'
 import { cn } from '@/lib/utils'
 
 /**
@@ -18,7 +18,7 @@ function buildLayerCss(layer: BgLayer, originalCss: string): string {
     .map((m) => m[1].trim())
     .join('; ')
 
-  const bgValue = layer.raw === 'none' ? 'none' : layer.raw
+  const bgValue = reconstructBackground([layer])
   return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue} }`
 }
 

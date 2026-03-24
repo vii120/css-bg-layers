@@ -41,9 +41,13 @@ export function extractDeclarations(input: string): string {
 function parseDeclarations(declarations: string): Record<string, string> {
   const props: Record<string, string> = {}
 
+  // Strip CSS comments before parsing so inline comments (e.g. `--s: 20px; /* note */\n background:`)
+  // don't bleed into the next property name.
+  const cleaned = declarations.replace(/\/\*[\s\S]*?\*\//g, '')
+
   // Split on semicolons. Values can span multiple lines but don't contain semicolons
   // (edge case: content property — not relevant here)
-  const lines = declarations.split(';')
+  const lines = cleaned.split(';')
 
   for (const line of lines) {
     const colonIdx = line.indexOf(':')
@@ -128,24 +132,80 @@ export function layerTypeLabel(type: LayerType): string {
 }
 
 /**
+ * Returns true if the string contains a space character outside of parentheses.
+ */
+function hasTopLevelSpace(value: string): boolean {
+  let depth = 0
+  for (const ch of value) {
+    if (ch === '(') depth++
+    else if (ch === ')') depth--
+    else if (ch === ' ' && depth === 0) return true
+  }
+  return false
+}
+
+/**
+ * Returns true if the token looks like a CSS color value:
+ * - Hex notation (#rgb, #rrggbb, etc.)
+ * - Color functions (rgb, hsl, oklch, etc.) or var() which most commonly
+ *   carries a color when appearing as a single trailing token on the last layer.
+ */
+function looksLikeColor(token: string): boolean {
+  const t = token.trim()
+  if (t.startsWith('#')) return true
+  const fn = t.match(/^([a-z-]+)\s*\(/)?.[1]
+  if (fn) {
+    return [
+      'rgb', 'rgba', 'hsl', 'hsla', 'hwb',
+      'oklch', 'oklab', 'lab', 'lch',
+      'color', 'color-mix', 'light-dark', 'var',
+    ].includes(fn)
+  }
+  // Named colors that are not position keywords and have no parens/spaces.
+  // Position keywords: left, right, top, bottom, center.
+  const posKeywords = new Set(['left', 'right', 'top', 'bottom', 'center'])
+  const lower = t.toLowerCase()
+  if (/^[a-z]+$/.test(lower) && !posKeywords.has(lower)) return true
+  return false
+}
+
+/**
  * Split a shorthand layer value into the image function and any trailing tokens
  * (position, size, repeat, etc. that follow the closing paren of the image function).
+ * Tracks parenthesis depth from the first '(' to find the matching closing paren,
+ * so layers like `var(--g1) var(--s) calc(1.73*var(--s))` are split correctly.
  */
 function splitLayerImageAndTrailing(raw: string): { imageValue: string; trailing: string } {
-  const lastParen = raw.lastIndexOf(')')
-  if (lastParen === -1 || lastParen >= raw.length - 1) {
+  const firstParen = raw.indexOf('(')
+  if (firstParen === -1) {
     return { imageValue: raw, trailing: '' }
   }
-  return {
-    imageValue: raw.slice(0, lastParen + 1).trim(),
-    trailing: raw.slice(lastParen + 1).trim(),
+
+  let depth = 0
+  for (let i = firstParen; i < raw.length; i++) {
+    if (raw[i] === '(') depth++
+    else if (raw[i] === ')') {
+      depth--
+      if (depth === 0) {
+        const trailing = raw.slice(i + 1).trim()
+        return {
+          imageValue: raw.slice(0, i + 1).trim(),
+          trailing,
+        }
+      }
+    }
   }
+
+  return { imageValue: raw, trailing: '' }
 }
 
 /**
  * Parse CSS input into an ordered array of background layers (top → bottom).
  * Returns null if no background-related properties are found.
  */
+const cycle = <T,>(arr: T[], i: number): T | undefined =>
+  arr.length > 0 ? arr[i % arr.length] : undefined
+
 export function parseCssInput(input: string): BgLayer[] | null {
   if (!input.trim()) return null
 
@@ -180,13 +240,12 @@ export function parseCssInput(input: string): BgLayer[] | null {
     const clips = bgClip ? splitTopLevelCommas(bgClip) : []
     const blendModes = bgBlendMode ? splitTopLevelCommas(bgBlendMode) : []
 
-    const cycle = <T,>(arr: T[], i: number): T | undefined =>
-      arr.length > 0 ? arr[i % arr.length] : undefined
-
     // When supplementary background-* properties are declared alongside the shorthand,
     // the raw layer string may contain embedded position tokens (e.g. `gradient(...) 25px 25px`).
     // Split them out so reconstruction doesn't duplicate position/size data.
-    const hasSuppProps = [bgPosition, bgSize, bgRepeat, bgAttachment, bgOrigin, bgClip, bgBlendMode].some(Boolean)
+    // blend-mode is excluded: it's not part of the `background` shorthand so it can't
+    // appear as an embedded trailing token in a layer value.
+    const hasSuppProps = [bgPosition, bgSize, bgRepeat, bgAttachment, bgOrigin, bgClip].some(Boolean)
 
     return layers.map((rawLayer, i) => {
       let raw = rawLayer
@@ -196,6 +255,24 @@ export function parseCssInput(input: string): BgLayer[] | null {
         const { imageValue, trailing } = splitLayerImageAndTrailing(rawLayer)
         raw = imageValue
         if (trailing) embeddedPosition = trailing
+      }
+
+      // For the last layer: if there's no explicit separate position and the
+      // embedded trailing is a single color-like token (no top-level spaces),
+      // treat it as the background-color rather than a position. This handles
+      // patterns like `gradient(...) var(--c)` or `gradient(...) #hex` alongside
+      // a supplementary `background-size`, where putting the color before `/size`
+      // would produce invalid CSS.
+      let resolvedColor = i === count - 1 ? bgColor : undefined
+      if (
+        i === count - 1 &&
+        !cycle(positions, i) &&
+        embeddedPosition &&
+        !hasTopLevelSpace(embeddedPosition) &&
+        looksLikeColor(embeddedPosition)
+      ) {
+        resolvedColor = embeddedPosition
+        embeddedPosition = undefined
       }
 
       return {
@@ -209,7 +286,7 @@ export function parseCssInput(input: string): BgLayer[] | null {
         origin: cycle(origins, i),
         clip: cycle(clips, i),
         blendMode: cycle(blendModes, i),
-        color: i === count - 1 ? bgColor : undefined,
+        color: resolvedColor,
       }
     })
   }
@@ -225,9 +302,6 @@ export function parseCssInput(input: string): BgLayer[] | null {
   const origins = bgOrigin ? splitTopLevelCommas(bgOrigin) : []
   const clips = bgClip ? splitTopLevelCommas(bgClip) : []
   const blendModes = bgBlendMode ? splitTopLevelCommas(bgBlendMode) : []
-
-  const cycle = <T,>(arr: T[], i: number): T | undefined =>
-    arr.length > 0 ? arr[i % arr.length] : undefined
 
   return images.map((image, i) => ({
     index: i,
