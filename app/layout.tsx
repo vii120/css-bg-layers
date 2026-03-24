@@ -31,7 +31,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'bg.layers - CSS Background Layer Editor',
   description:
-    'A powerful CSS background tool to split, edit, and visualize multiple background layers in complex CSS designs. Make every layer easy to see, understand, and manage.',
+    'A powerful CSS background tool to split, visualize, and edit multiple background layers in complex CSS designs. Make every layer easy to see, understand, and manage.',
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-touch-icon.png' }],
   },
   manifest: '/site.webmanifest',
+  openGraph: {
+    images: ['/og-image.png'],
+  },
 }
 
 export default function RootLayout({
