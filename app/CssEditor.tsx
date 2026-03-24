@@ -1,40 +1,48 @@
 'use client'
 
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
-import { EditorView, minimalSetup } from 'codemirror'
-import { placeholder as cmPlaceholder } from '@codemirror/view'
 import { css } from '@codemirror/lang-css'
-import { EditorState } from '@codemirror/state'
 import { syntaxHighlighting } from '@codemirror/language'
+import { EditorState } from '@codemirror/state'
+import { placeholder as cmPlaceholder } from '@codemirror/view'
+import { EditorView, minimalSetup } from 'codemirror'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { baseEditorTheme, highlightStyle } from '@/lib/cmTheme'
 
-const editorTheme = EditorView.theme({
-  '&': {
-    height: '100%',
-    fontSize: '13px',
-    fontFamily: 'var(--font-geist-mono), monospace',
+const editorTheme = EditorView.theme(
+  {
+    '&': {
+      height: '100%',
+      fontSize: '13px',
+      fontFamily: 'var(--font-geist-mono), monospace',
+    },
+    '.cm-content': {
+      padding: '1rem',
+    },
+    '.cm-focused .cm-cursor': {
+      borderLeftColor: '#3b52d4',
+    },
+    '.cm-placeholder': {
+      color: '#b0a89e',
+      fontStyle: 'normal',
+    },
   },
-  '.cm-content': {
-    padding: '1rem',
-  },
-  '.cm-focused .cm-cursor': {
-    borderLeftColor: '#3b52d4',
-  },
-  '.cm-placeholder': {
-    color: '#b0a89e',
-    fontStyle: 'normal',
-  },
-}, { dark: false })
+  { dark: false },
+)
 
-export type CssEditorHandle = { focus: () => void }
+export interface CssEditorHandle {
+  focus: () => void
+}
 
-export const CssEditor = forwardRef<CssEditorHandle, {
-  value: string
-  onChange: (v: string) => void
-  placeholder?: string
-  className?: string
-  style?: React.CSSProperties
-}>(function CssEditor({ value, onChange, placeholder, className, style }, ref) {
+export const CssEditor = forwardRef<
+  CssEditorHandle,
+  {
+    value: string
+    onChange: (v: string) => void
+    placeholder?: string
+    className?: string
+    style?: React.CSSProperties
+  }
+>(({ value, onChange, placeholder, className, style }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
 

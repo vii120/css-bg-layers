@@ -1,15 +1,16 @@
 'use client'
 
-import { type RefObject } from 'react'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
+import type { RefObject } from 'react'
+import type { CssEditorHandle } from '../CssEditor'
+import { sendGAEvent } from '@next/third-parties/google'
 import { Layers } from 'lucide-react'
 import { motion } from 'motion/react'
-import { sendGAEvent } from '@next/third-parties/google'
-import { CssEditor, type CssEditorHandle } from '../CssEditor'
-import { PreviewCanvas } from './PreviewCanvas'
-import { useCssStore } from '@/lib/store'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { parseCssInput } from '@/lib/parseCss'
+import { useCssStore } from '@/lib/store'
+import { CssEditor } from '../CssEditor'
+import { PreviewCanvas } from './PreviewCanvas'
 
 export function CssInputSection({
   editorRef,
@@ -72,18 +73,20 @@ export function CssInputSection({
             Preview
           </span>
           <div className="h-64 rounded-md overflow-hidden relative border border-line">
-            {hasInput ? (
-              <PreviewCanvas
-                css={css}
-                className="absolute inset-0 w-full h-full"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center select-none bg-[repeating-conic-gradient(var(--color-surface)_0%_25%,transparent_0%_50%)] bg-size-[20px_20px]">
-                <span className="bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded text-xs text-ink-muted">
-                  paste CSS to preview
-                </span>
-              </div>
-            )}
+            {hasInput
+              ? (
+                  <PreviewCanvas
+                    css={css}
+                    className="absolute inset-0 w-full h-full"
+                  />
+                )
+              : (
+                  <div className="absolute inset-0 flex items-center justify-center select-none bg-[repeating-conic-gradient(var(--color-surface)_0%_25%,transparent_0%_50%)] bg-size-[20px_20px]">
+                    <span className="bg-canvas/80 backdrop-blur-sm px-2.5 py-1 rounded text-xs text-ink-muted">
+                      paste CSS to preview
+                    </span>
+                  </div>
+                )}
           </div>
         </div>
       </div>

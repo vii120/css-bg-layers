@@ -1,15 +1,15 @@
 import type { Metadata } from 'next'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import {
-  Space_Grotesk,
-  Geist_Mono,
-  Geist,
   Bricolage_Grotesque,
+  Geist,
+  Geist_Mono,
+  Space_Grotesk,
 } from 'next/font/google'
 import Link from 'next/link'
 import { Toaster } from '@/components/ui/sonner'
-import { GoogleAnalytics } from '@next/third-parties/google'
-import './globals.css'
 import { cn } from '@/lib/utils'
+import './globals.css'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 

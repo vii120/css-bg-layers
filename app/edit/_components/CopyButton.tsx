@@ -1,20 +1,21 @@
 'use client'
 
-import { Copy, CheckCircle } from 'lucide-react'
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
 import { sendGAEvent } from '@next/third-parties/google'
+import { CheckCircle, Copy } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useState } from 'react'
 
 export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
 
   function handleCopy() {
-    if (copied) return
+    if (copied)
+      return
 
     sendGAEvent('event', 'copy_css')
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 1800)
+      setTimeout(setCopied, 1800, false)
     })
   }
 
@@ -36,17 +37,19 @@ export function CopyButton({ text }: { text: string }) {
           transition={{ type: 'spring', duration: 0.25 }}
           className="flex justify-center items-center gap-1.5"
         >
-          {copied ? (
-            <>
-              <CheckCircle size={14} />
-              Copied
-            </>
-          ) : (
-            <>
-              <Copy size={14} />
-              Copy
-            </>
-          )}
+          {copied
+            ? (
+                <>
+                  <CheckCircle size={14} />
+                  Copied
+                </>
+              )
+            : (
+                <>
+                  <Copy size={14} />
+                  Copy
+                </>
+              )}
         </motion.div>
       </AnimatePresence>
     </button>

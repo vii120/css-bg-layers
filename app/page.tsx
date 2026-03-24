@@ -1,14 +1,14 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion } from 'motion/react'
-import { type CssEditorHandle } from './CssEditor'
-import { Footer } from './_components/Footer'
-import { DemoPlayground } from './_components/DemoPlayground'
-import { HomeHero } from './_components/HomeHero'
-import { CssInputSection } from './_components/CssInputSection'
-import { ExamplesGrid } from './_components/ExamplesGrid'
+import type { CssEditorHandle } from './CssEditor'
 import { sendGAEvent } from '@next/third-parties/google'
+import { motion } from 'motion/react'
+import { useRef } from 'react'
+import { CssInputSection } from './_components/CssInputSection'
+import { DemoPlayground } from './_components/DemoPlayground'
+import { ExamplesGrid } from './_components/ExamplesGrid'
+import { Footer } from './_components/Footer'
+import { HomeHero } from './_components/HomeHero'
 
 export default function Home() {
   const editorRef = useRef<CssEditorHandle>(null)

@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { EditorState } from '@codemirror/state'
-import { EditorView } from '@codemirror/view'
 import { css } from '@codemirror/lang-css'
 import { syntaxHighlighting } from '@codemirror/language'
+import { EditorState } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
+import { useEffect, useRef } from 'react'
 import { baseEditorTheme, highlightStyle } from '@/lib/cmTheme'
 
 const viewerTheme = EditorView.theme({
@@ -28,7 +28,8 @@ export function CssViewer({ code }: { code: string }) {
   const viewRef = useRef<EditorView | null>(null)
 
   useEffect(() => {
-    if (!ref.current) return
+    if (!ref.current)
+      return
 
     const state = EditorState.create({
       doc: code,
@@ -54,9 +55,11 @@ export function CssViewer({ code }: { code: string }) {
 
   useEffect(() => {
     const view = viewRef.current
-    if (!view) return
+    if (!view)
+      return
     const current = view.state.doc.toString()
-    if (current === code) return
+    if (current === code)
+      return
     view.dispatch({
       changes: { from: 0, to: current.length, insert: code },
     })

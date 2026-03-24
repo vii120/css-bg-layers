@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react'
-import { motion, useAnimationFrame, useReducedMotion } from 'motion/react'
 import { sendGAEvent } from '@next/third-parties/google'
-import { cn } from '@/lib/utils'
+import { motion, useAnimationFrame, useReducedMotion } from 'motion/react'
+import { useEffect, useRef } from 'react'
 import { useCssStore } from '@/lib/store'
+import { cn } from '@/lib/utils'
 
 const DECORATIONS = [
   {
@@ -52,10 +52,11 @@ export function HeadingDeco() {
   const { setCss } = useCssStore()
   const mouseRef = useRef({ x: 0, y: 0 })
   const elemsRef = useRef<(HTMLDivElement | null)[]>([])
-  const posRef = useRef<{ x: number; y: number }[]>([])
+  const posRef = useRef<{ x: number, y: number }[]>([])
 
   useEffect(() => {
-    if (reduceMotion) return
+    if (reduceMotion)
+      return
 
     const onMove = (e: PointerEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY }
@@ -65,7 +66,8 @@ export function HeadingDeco() {
   }, [reduceMotion])
 
   useAnimationFrame(() => {
-    if (reduceMotion) return
+    if (reduceMotion)
+      return
 
     DECORATIONS.forEach((d, i) => {
       const strength = (d.depth * -1) / 100
@@ -91,7 +93,8 @@ export function HeadingDeco() {
             elemsRef.current[i] = el
           }}
           onClick={() => {
-            if (!d.css) return
+            if (!d.css)
+              return
 
             sendGAEvent('event', 'click_deco', { name: i })
             setCss(d.css)
@@ -131,7 +134,8 @@ export function HeadingDeco() {
                 d.background,
                 d.rotate,
               )}
-            ></div>
+            >
+            </div>
           </motion.div>
         </div>
       ))}

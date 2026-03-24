@@ -15,7 +15,8 @@ export function Footer() {
           GitHub
         </a>
         <span>
-          Created by{' '}
+          Created by
+          {' '}
           <a
             href="https://www.vivitseng.com/"
             target="_blank"

@@ -1,59 +1,64 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import type { BgLayer } from '@/lib/parseCss'
+import { sendGAEvent } from '@next/third-parties/google'
+import { ChevronDown, Eye, EyeClosed, MoveLeft } from 'lucide-react'
+import { AnimatePresence, motion, Reorder, useDragControls } from 'motion/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, Eye, EyeClosed, MoveLeft } from 'lucide-react'
-import { motion, AnimatePresence, Reorder, useDragControls } from 'motion/react'
-import { sendGAEvent } from '@next/third-parties/google'
-import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
+import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import {
+
   parseCssInput,
   reconstructBackground,
-  type BgLayer,
 } from '@/lib/parseCss'
 import { useCssStore } from '@/lib/store'
-import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
+import { cn } from '@/lib/utils'
 import { LayerCard } from './_components/LayerCard'
 import { OutputCss } from './_components/OutputCss'
 
 function buildFilteredPreviewCss(
-  cssVars: { name: string; value: string }[],
+  cssVars: { name: string, value: string }[],
   layers: BgLayer[],
   hiddenIndices: Set<number>,
   hideColor: boolean,
 ): string {
-  const customProps = cssVars.map((v) => `${v.name}: ${v.value}`).join('; ')
+  const customProps = cssVars.map(v => `${v.name}: ${v.value}`).join('; ')
 
-  const visibleLayers = layers.filter((l) => !hiddenIndices.has(l.index))
+  const visibleLayers = layers.filter(l => !hiddenIndices.has(l.index))
   const color = !hideColor
     ? layers.reduce<string | undefined>((acc, l) => l.color ?? acc, undefined)
     : undefined
 
-  if (visibleLayers.length === 0 && !color) return ''
+  if (visibleLayers.length === 0 && !color)
+    return ''
 
   const decls: string[] = []
 
   if (visibleLayers.length > 0) {
     decls.push(`background: ${reconstructBackground(visibleLayers)}`)
-  } else {
+  }
+  else {
     // No image layers — reset background so a previous render doesn't bleed through
     decls.push('background: none')
   }
 
-  if (color) decls.push(`background-color: ${color}`)
+  if (color)
+    decls.push(`background-color: ${color}`)
 
-  const blendModes = visibleLayers.map((l) => l.blendMode).filter(Boolean)
-  if (blendModes.length > 0) decls.push(`background-blend-mode: ${blendModes.join(', ')}`)
+  const blendModes = visibleLayers.map(l => l.blendMode).filter(Boolean)
+  if (blendModes.length > 0)
+    decls.push(`background-blend-mode: ${blendModes.join(', ')}`)
 
   const customPropsStr = customProps ? `${customProps}; ` : ''
   return `div { ${customPropsStr}${decls.join('; ')} }`
 }
 
-function extractCssVariables(css: string): { name: string; value: string }[] {
+function extractCssVariables(css: string): { name: string, value: string }[] {
   const block = css.trim().match(/\{([\s\S]*)\}/)
   const inner = block ? block[1] : css
-  return [...inner.matchAll(/(--[\w-]+)\s*:\s*([^;]+)/g)].map((m) => ({
+  return Array.from(inner.matchAll(/(--[\w-]+)\s*:\s*([^;]+)/g), m => ({
     name: m[1].trim(),
     value: m[2].trim(),
   }))
@@ -71,7 +76,7 @@ function DraggableLayerCard({
   layer: BgLayer
   order: number
   total: number
-  cssVars: { name: string; value: string }[]
+  cssVars: { name: string, value: string }[]
   isVisible: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
@@ -123,7 +128,7 @@ export default function EditPage() {
   const [error, setError] = useState<string | null>(null)
   const [hiddenLayers, setHiddenLayers] = useState<Set<number>>(new Set())
   const [varsOpen, setVarsOpen] = useState(true)
-  const [cssVars, setCssVars] = useState<{ name: string; value: string }[]>([])
+  const [cssVars, setCssVars] = useState<{ name: string, value: string }[]>([])
   const [aspectRatio, setAspectRatio] = useState<
     (typeof ASPECT_RATIOS)[number]
   >(ASPECT_RATIOS[0])
@@ -146,8 +151,8 @@ export default function EditPage() {
   }, [stored])
 
   function updateVar(name: string, newValue: string) {
-    setCssVars((prev) =>
-      prev.map((v) => (v.name === name ? { ...v, value: newValue } : v)),
+    setCssVars(prev =>
+      prev.map(v => (v.name === name ? { ...v, value: newValue } : v)),
     )
   }
 
@@ -156,8 +161,8 @@ export default function EditPage() {
     field: keyof BgLayer,
     value: string,
   ) {
-    setLayers((prev) =>
-      prev!.map((l) => (l.index === layerIndex ? { ...l, [field]: value } : l)),
+    setLayers(prev =>
+      prev!.map(l => (l.index === layerIndex ? { ...l, [field]: value } : l)),
     )
   }
 
@@ -169,7 +174,7 @@ export default function EditPage() {
     })
   }
 
-  const visibleLayers = layers?.filter((l) => !hiddenLayers.has(l.index)) ?? []
+  const visibleLayers = layers?.filter(l => !hiddenLayers.has(l.index)) ?? []
   const previewCss = layers
     ? buildFilteredPreviewCss(cssVars, layers, hiddenLayers, colorHidden)
     : ''
@@ -207,23 +212,30 @@ export default function EditPage() {
                     if (hiddenLayers.size > 0 || colorHidden) {
                       setHiddenLayers(new Set())
                       setColorHidden(false)
-                    } else {
-                      setHiddenLayers(new Set(layers.map((l) => l.index)))
+                    }
+                    else {
+                      setHiddenLayers(new Set(layers.map(l => l.index)))
                       setColorHidden(true)
                     }
                   }}
                   className="mr-3 flex items-center gap-1 text-xs text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-2"
                   title={hiddenLayers.size > 0 || colorHidden ? 'Show all' : 'Hide all'}
                 >
-                  {hiddenLayers.size > 0 || colorHidden ? (
-                    <>
-                      <Eye size={14} /> show all
-                    </>
-                  ) : (
-                    <>
-                      <EyeClosed size={14} /> hide all
-                    </>
-                  )}
+                  {hiddenLayers.size > 0 || colorHidden
+                    ? (
+                        <>
+                          <Eye size={14} />
+                          {' '}
+                          show all
+                        </>
+                      )
+                    : (
+                        <>
+                          <EyeClosed size={14} />
+                          {' '}
+                          hide all
+                        </>
+                      )}
                 </button>
               </div>
               <Reorder.Group
@@ -242,14 +254,14 @@ export default function EditPage() {
                     isVisible={!hiddenLayers.has(layer.index)}
                     onToggleVisibility={() => toggleLayer(layer.index)}
                     onUpdate={(field, value) =>
-                      updateLayer(layer.index, field, value)
-                    }
+                      updateLayer(layer.index, field, value)}
                   />
                 ))}
                 {/* Background color — always pinned to last layer */}
                 {(() => {
-                  const layerWithColor = layers.find((l) => l.color != null)
-                  if (!layerWithColor) return null
+                  const layerWithColor = layers.find(l => l.color != null)
+                  if (!layerWithColor)
+                    return null
                   return (
                     <div
                       className={cn(
@@ -262,18 +274,20 @@ export default function EditPage() {
                           background-color
                         </span>
                         <motion.button
-                          onClick={() => setColorHidden((v) => !v)}
+                          onClick={() => setColorHidden(v => !v)}
                           className="text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-3"
                           aria-label={colorHidden ? 'Show color' : 'Hide color'}
                           whileTap={{ scale: 0.8 }}
                           whileHover={{ scale: 1.15 }}
                           transition={{ duration: 0.12 }}
                         >
-                          {colorHidden ? (
-                            <EyeClosed size={14} />
-                          ) : (
-                            <Eye size={14} />
-                          )}
+                          {colorHidden
+                            ? (
+                                <EyeClosed size={14} />
+                              )
+                            : (
+                                <Eye size={14} />
+                              )}
                         </motion.button>
                       </div>
                       <div className="flex">
@@ -291,13 +305,12 @@ export default function EditPage() {
                           <input
                             className="select-text font-mono text-xs text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors disabled:pointer-events-none"
                             value={layerWithColor.color!}
-                            onChange={(e) =>
+                            onChange={e =>
                               updateLayer(
                                 layerWithColor.index,
                                 'color',
                                 e.target.value,
-                              )
-                            }
+                              )}
                             spellCheck={false}
                             disabled={colorHidden}
                           />
@@ -315,7 +328,7 @@ export default function EditPage() {
                 <button
                   onClick={() => {
                     sendGAEvent('event', 'toggle_variables_panel')
-                    setVarsOpen((v) => !v)
+                    setVarsOpen(v => !v)
                   }}
                   className="flex items-center gap-1.5 cursor-pointer pl-3 border-l-3 border-accent py-0.5"
                 >
@@ -343,7 +356,7 @@ export default function EditPage() {
                       className="overflow-hidden"
                     >
                       <div className="max-h-50 overflow-auto flex flex-col gap-1">
-                        {cssVars.map((v) => (
+                        {cssVars.map(v => (
                           <div
                             key={v.name}
                             className="shrink-0 flex gap-3 text-xs font-mono px-3 py-1.5 rounded bg-surface border border-line"
@@ -354,9 +367,8 @@ export default function EditPage() {
                             <input
                               className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas transition-colors"
                               value={v.value}
-                              onChange={(e) =>
-                                updateVar(v.name, e.target.value)
-                              }
+                              onChange={e =>
+                                updateVar(v.name, e.target.value)}
                               spellCheck={false}
                             />
                           </div>
@@ -407,7 +419,7 @@ export default function EditPage() {
               </motion.div>
             </div>
             <div className="flex justify-center items-center gap-1 shrink-0">
-              {ASPECT_RATIOS.map((r) => (
+              {ASPECT_RATIOS.map(r => (
                 <button
                   key={r.label}
                   onClick={() => {

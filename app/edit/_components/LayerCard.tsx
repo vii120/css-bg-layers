@@ -1,10 +1,12 @@
 'use client'
 
-import { Eye, EyeClosed, GripVertical } from 'lucide-react'
-import { motion, type DragControls } from 'motion/react'
+import type { DragControls } from 'motion/react'
+import type { BgLayer } from '@/lib/parseCss'
 import { sendGAEvent } from '@next/third-parties/google'
+import { Eye, EyeClosed, GripVertical } from 'lucide-react'
+import { motion } from 'motion/react'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
-import { reconstructBackground, type BgLayer } from '@/lib/parseCss'
+import { reconstructBackground } from '@/lib/parseCss'
 import { cn } from '@/lib/utils'
 
 /**
@@ -13,14 +15,14 @@ import { cn } from '@/lib/utils'
  */
 function buildLayerCss(
   layer: BgLayer,
-  cssVars: { name: string; value: string }[],
+  cssVars: { name: string, value: string }[],
 ): string {
-  const customProps = cssVars.map((v) => `${v.name}: ${v.value}`).join('; ')
+  const customProps = cssVars.map(v => `${v.name}: ${v.value}`).join('; ')
   const bgValue = reconstructBackground([layer])
   return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue} }`
 }
 
-const SUB_PROP_FIELDS: { label: string; key: keyof BgLayer }[] = [
+const SUB_PROP_FIELDS: { label: string, key: keyof BgLayer }[] = [
   { label: 'position', key: 'position' },
   { label: 'size', key: 'size' },
   { label: 'repeat', key: 'repeat' },
@@ -43,7 +45,7 @@ export function LayerCard({
   layer: BgLayer
   order: number
   total: number
-  cssVars: { name: string; value: string }[]
+  cssVars: { name: string, value: string }[]
   isVisible: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
@@ -51,8 +53,8 @@ export function LayerCard({
 }) {
   const layerCss = buildLayerCss(layer, cssVars)
 
-  const displayNumber =
-    order === 0
+  const displayNumber
+    = order === 0
       ? `1 - top`
       : order === total - 1
         ? `${total} - bottom`
@@ -114,7 +116,7 @@ export function LayerCard({
             className="select-text font-mono text-xs leading-relaxed text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors resize-none break-all max-h-25 overflow-y-auto disabled:pointer-events-none"
             style={{ fieldSizing: 'content' } as React.CSSProperties}
             value={layer.raw}
-            onChange={(e) => onUpdate('raw', e.target.value)}
+            onChange={e => onUpdate('raw', e.target.value)}
             onBlur={() => sendGAEvent('event', 'edit_layer')}
             spellCheck={false}
             rows={1}
@@ -128,7 +130,7 @@ export function LayerCard({
                   <input
                     className="select-text font-mono text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors disabled:pointer-events-none"
                     value={layer[key] as string}
-                    onChange={(e) => onUpdate(key, e.target.value)}
+                    onChange={e => onUpdate(key, e.target.value)}
                     onBlur={() => sendGAEvent('event', 'edit_layer')}
                     spellCheck={false}
                     disabled={!isVisible}

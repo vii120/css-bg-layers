@@ -1,12 +1,12 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { motion } from 'motion/react'
 import { sendGAEvent } from '@next/third-parties/google'
-import { PreviewCanvas } from './PreviewCanvas'
+import { motion } from 'motion/react'
+import { useRouter } from 'next/navigation'
 import { EXAMPLES } from '@/lib/examples'
 import { parseCssInput } from '@/lib/parseCss'
 import { useCssStore } from '@/lib/store'
+import { PreviewCanvas } from './PreviewCanvas'
 
 export function ExamplesGrid() {
   const { setCss } = useCssStore()
@@ -41,7 +41,9 @@ export function ExamplesGrid() {
                   className="absolute inset-0 w-full h-full transition-transform duration-300 group-hover:scale-103"
                 />
                 <span className="absolute top-2 right-2 text-xs font-mono px-1.5 py-0.5 rounded bg-black/30 text-white/80 backdrop-blur-sm tabular-nums">
-                  {layerCount} layers
+                  {layerCount}
+                  {' '}
+                  layers
                 </span>
               </div>
               <div className="px-3.5 py-3 transition-colors border-t border-line bg-canvas">
@@ -57,10 +59,12 @@ export function ExamplesGrid() {
                   href={ex.source.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()}
                   className="text-xs text-ink-muted underline underline-offset-2 hover:text-ink transition-colors"
                 >
-                  via {ex.source.name}
+                  via
+                  {' '}
+                  {ex.source.name}
                 </a>
               </div>
             </button>

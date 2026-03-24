@@ -1,15 +1,15 @@
 'use client'
 
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
-import { GripVertical, Layers, Braces, ArrowUpDown } from 'lucide-react'
+import { sendGAEvent } from '@next/third-parties/google'
+import { ArrowUpDown, Braces, GripVertical, Layers } from 'lucide-react'
 import {
   AnimatePresence,
-  Reorder,
-  useDragControls,
   motion,
+  Reorder,
   useAnimationControls,
+  useDragControls,
 } from 'motion/react'
-import { sendGAEvent } from '@next/third-parties/google'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { PreviewCanvas } from './PreviewCanvas'
 
 interface DemoLayer {
@@ -39,28 +39,31 @@ const INITIAL_LAYERS: DemoLayer[] = [
 ]
 
 function buildPreviewCss(layers: DemoLayer[]): string {
-  return `background: ${layers.map((l) => l.value).join(', ')}`
+  return `background: ${layers.map(l => l.value).join(', ')}`
 }
 
 function getGradientFn(value: string): string {
   let depth = 0
   for (let i = 0; i < value.length; i++) {
-    if (value[i] === '(') depth++
+    if (value[i] === '(') {
+      depth++
+    }
     else if (value[i] === ')') {
       depth--
-      if (depth === 0) return value.slice(0, i + 1)
+      if (depth === 0)
+        return value.slice(0, i + 1)
     }
   }
   return value
 }
 
-const LayerRow = memo(function LayerRow({
+const LayerRow = memo(({
   layer,
   index,
 }: {
   layer: DemoLayer
   index: number
-}) {
+}) => {
   const dragControls = useDragControls()
 
   return (
@@ -122,13 +125,13 @@ export function DemoPlayground() {
   const [mode, setMode] = useState<'raw' | 'layers'>('layers')
   const [layers, setLayers] = useState<DemoLayer[]>(INITIAL_LAYERS)
   const previewControls = useAnimationControls()
-  const prevOrderRef = useRef(layers.map((l) => l.id).join(','))
+  const prevOrderRef = useRef(layers.map(l => l.id).join(','))
 
   const previewCss = useMemo(() => buildPreviewCss(layers), [layers])
 
   // Bounce the preview when layer order changes — rewards the drag
   useEffect(() => {
-    const order = layers.map((l) => l.id).join(',')
+    const order = layers.map(l => l.id).join(',')
     if (order !== prevOrderRef.current) {
       prevOrderRef.current = order
       previewControls.start({
@@ -146,7 +149,7 @@ export function DemoPlayground() {
         </div>
         <motion.button
           onClick={() => {
-            setMode((prev) => (prev === 'layers' ? 'raw' : 'layers'))
+            setMode(prev => (prev === 'layers' ? 'raw' : 'layers'))
             sendGAEvent('event', 'toggle_demo')
           }}
           className="w-40 text-xs text-ink-muted hover:text-ink transition-colors border border-line rounded-full px-4 py-1.5 hover:border-ink-muted/40 cursor-pointer"
@@ -162,17 +165,19 @@ export function DemoPlayground() {
               transition={{ type: 'spring', duration: 0.25 }}
               className="flex justify-center items-center gap-1.5 whitespace-nowrap"
             >
-              {mode === 'raw' ? (
-                <>
-                  <Layers size={12} />
-                  Split into layers
-                </>
-              ) : (
-                <>
-                  <Braces size={12} />
-                  View raw CSS
-                </>
-              )}
+              {mode === 'raw'
+                ? (
+                    <>
+                      <Layers size={12} />
+                      Split into layers
+                    </>
+                  )
+                : (
+                    <>
+                      <Braces size={12} />
+                      View raw CSS
+                    </>
+                  )}
             </motion.div>
           </AnimatePresence>
         </motion.button>
@@ -182,55 +187,59 @@ export function DemoPlayground() {
         {/* Left panel */}
         <div className="w-full md:w-100">
           <AnimatePresence mode="popLayout" initial={false}>
-            {mode === 'raw' ? (
-              <motion.div
-                key="raw"
-                variants={panelVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-              >
-                <div className="font-mono text-xs leading-relaxed text-ink bg-surface rounded-md border border-line p-4 group-hover:border-accent/40 transition-colors break-all">
-                  <span className="text-ink-muted">{'background: '}</span>
-                  {layers.map((layer, i) => (
-                    <span key={layer.id}>
-                      <span
-                        className="inline-block w-2 h-2 rounded-[2px] mr-1 align-middle -translate-y-px border border-black/10 shrink-0"
-                        style={{ backgroundImage: getGradientFn(layer.value) }}
-                      />
-                      {layer.value}
-                      <span className="text-ink-muted">
-                        {i < layers.length - 1 ? ', ' : ';'}
-                      </span>
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="layers"
-                variants={panelVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={transition}
-              >
-                <Reorder.Group
-                  axis="y"
-                  values={layers}
-                  onReorder={setLayers}
-                  className="flex flex-col gap-1.5"
-                >
-                  {layers.map((layer, i) => (
-                    <LayerRow key={layer.id} layer={layer} index={i} />
-                  ))}
-                </Reorder.Group>
-                <p className="mt-2 text-xs text-ink-muted/40 font-mono text-center flex justify-center items-center gap-2">
-                  drag to reorder <ArrowUpDown size={12} />
-                </p>
-              </motion.div>
-            )}
+            {mode === 'raw'
+              ? (
+                  <motion.div
+                    key="raw"
+                    variants={panelVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={transition}
+                  >
+                    <div className="font-mono text-xs leading-relaxed text-ink bg-surface rounded-md border border-line p-4 group-hover:border-accent/40 transition-colors break-all">
+                      <span className="text-ink-muted">{'background: '}</span>
+                      {layers.map((layer, i) => (
+                        <span key={layer.id}>
+                          <span
+                            className="inline-block w-2 h-2 rounded-[2px] mr-1 align-middle -translate-y-px border border-black/10 shrink-0"
+                            style={{ backgroundImage: getGradientFn(layer.value) }}
+                          />
+                          {layer.value}
+                          <span className="text-ink-muted">
+                            {i < layers.length - 1 ? ', ' : ';'}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                )
+              : (
+                  <motion.div
+                    key="layers"
+                    variants={panelVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={transition}
+                  >
+                    <Reorder.Group
+                      axis="y"
+                      values={layers}
+                      onReorder={setLayers}
+                      className="flex flex-col gap-1.5"
+                    >
+                      {layers.map((layer, i) => (
+                        <LayerRow key={layer.id} layer={layer} index={i} />
+                      ))}
+                    </Reorder.Group>
+                    <p className="mt-2 text-xs text-ink-muted/40 font-mono text-center flex justify-center items-center gap-2">
+                      drag to reorder
+                      {' '}
+                      <ArrowUpDown size={12} />
+                    </p>
+                  </motion.div>
+                )}
           </AnimatePresence>
         </div>
 

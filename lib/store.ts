@@ -5,7 +5,7 @@ interface CssStore {
   setCss: (css: string) => void
 }
 
-export const useCssStore = create<CssStore>()((set) => ({
+export const useCssStore = create<CssStore>()(set => ({
   css: '',
-  setCss: (css) => set({ css }),
+  setCss: css => set({ css }),
 }))

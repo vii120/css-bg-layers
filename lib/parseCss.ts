@@ -9,8 +9,12 @@ export function splitTopLevelCommas(value: string): string[] {
 
   for (let i = 0; i < value.length; i++) {
     const ch = value[i]
-    if (ch === '(') depth++
-    else if (ch === ')') depth--
+    if (ch === '(') {
+      depth++
+    }
+    else if (ch === ')') {
+      depth--
+    }
     else if (ch === ',' && depth === 0) {
       parts.push(value.slice(start, i).trim())
       start = i + 1
@@ -18,7 +22,8 @@ export function splitTopLevelCommas(value: string): string[] {
   }
 
   const last = value.slice(start).trim()
-  if (last) parts.push(last)
+  if (last)
+    parts.push(last)
   return parts
 }
 
@@ -29,7 +34,8 @@ export function splitTopLevelCommas(value: string): string[] {
 export function extractDeclarations(input: string): string {
   const trimmed = input.trim()
   const braceMatch = trimmed.match(/\{([\s\S]*)\}/)
-  if (braceMatch) return braceMatch[1].trim()
+  if (braceMatch)
+    return braceMatch[1].trim()
   return trimmed
 }
 
@@ -51,15 +57,18 @@ function parseDeclarations(declarations: string): Record<string, string> {
 
   for (const line of lines) {
     const colonIdx = line.indexOf(':')
-    if (colonIdx === -1) continue
+    if (colonIdx === -1)
+      continue
 
     const prop = line.slice(0, colonIdx).trim().toLowerCase()
     // Normalize whitespace in value (collapse newlines/tabs to single space)
     const value = line.slice(colonIdx + 1).replace(/\s+/g, ' ').trim()
 
-    if (!prop || !value) continue
+    if (!prop || !value)
+      continue
     // Skip CSS custom properties
-    if (prop.startsWith('--')) continue
+    if (prop.startsWith('--'))
+      continue
 
     props[prop] = value
   }
@@ -101,17 +110,25 @@ export function detectLayerType(value: string): LayerType {
   const fnMatch = value.match(/([a-z-]+)\s*\(/)
   if (fnMatch) {
     const fn = fnMatch[1].toLowerCase()
-    if (fn === 'linear-gradient') return 'linear-gradient'
-    if (fn === 'radial-gradient') return 'radial-gradient'
-    if (fn === 'conic-gradient') return 'conic-gradient'
-    if (fn === 'repeating-linear-gradient') return 'repeating-linear-gradient'
-    if (fn === 'repeating-radial-gradient') return 'repeating-radial-gradient'
-    if (fn === 'repeating-conic-gradient') return 'repeating-conic-gradient'
-    if (fn === 'url' || fn === 'image' || fn === 'image-set' || fn === 'cross-fade') return 'image'
+    if (fn === 'linear-gradient')
+      return 'linear-gradient'
+    if (fn === 'radial-gradient')
+      return 'radial-gradient'
+    if (fn === 'conic-gradient')
+      return 'conic-gradient'
+    if (fn === 'repeating-linear-gradient')
+      return 'repeating-linear-gradient'
+    if (fn === 'repeating-radial-gradient')
+      return 'repeating-radial-gradient'
+    if (fn === 'repeating-conic-gradient')
+      return 'repeating-conic-gradient'
+    if (fn === 'url' || fn === 'image' || fn === 'image-set' || fn === 'cross-fade')
+      return 'image'
   }
 
   const v = value.trim().toLowerCase()
-  if (v === 'none') return 'none'
+  if (v === 'none')
+    return 'none'
 
   return 'unknown'
 }
@@ -137,9 +154,12 @@ export function layerTypeLabel(type: LayerType): string {
 function hasTopLevelSpace(value: string): boolean {
   let depth = 0
   for (const ch of value) {
-    if (ch === '(') depth++
-    else if (ch === ')') depth--
-    else if (ch === ' ' && depth === 0) return true
+    if (ch === '(')
+      depth++
+    else if (ch === ')')
+      depth--
+    else if (ch === ' ' && depth === 0)
+      return true
   }
   return false
 }
@@ -153,16 +173,22 @@ function splitTopLevelSpaces(value: string): string[] {
   let start = 0
   for (let i = 0; i < value.length; i++) {
     const ch = value[i]
-    if (ch === '(') depth++
-    else if (ch === ')') depth--
+    if (ch === '(') {
+      depth++
+    }
+    else if (ch === ')') {
+      depth--
+    }
     else if (ch === ' ' && depth === 0) {
       const token = value.slice(start, i).trim()
-      if (token) parts.push(token)
+      if (token)
+        parts.push(token)
       start = i + 1
     }
   }
   const last = value.slice(start).trim()
-  if (last) parts.push(last)
+  if (last)
+    parts.push(last)
   return parts
 }
 
@@ -174,20 +200,32 @@ function splitTopLevelSpaces(value: string): string[] {
  */
 function looksLikeColor(token: string): boolean {
   const t = token.trim()
-  if (t.startsWith('#')) return true
+  if (t.startsWith('#'))
+    return true
   const fn = t.match(/^([a-z-]+)\s*\(/)?.[1]
   if (fn) {
     return [
-      'rgb', 'rgba', 'hsl', 'hsla', 'hwb',
-      'oklch', 'oklab', 'lab', 'lch',
-      'color', 'color-mix', 'light-dark', 'var',
+      'rgb',
+      'rgba',
+      'hsl',
+      'hsla',
+      'hwb',
+      'oklch',
+      'oklab',
+      'lab',
+      'lch',
+      'color',
+      'color-mix',
+      'light-dark',
+      'var',
     ].includes(fn)
   }
   // Named colors that are not position keywords and have no parens/spaces.
   // Position keywords: left, right, top, bottom, center.
   const posKeywords = new Set(['left', 'right', 'top', 'bottom', 'center'])
   const lower = t.toLowerCase()
-  if (/^[a-z]+$/.test(lower) && !posKeywords.has(lower)) return true
+  if (/^[a-z]+$/.test(lower) && !posKeywords.has(lower))
+    return true
   return false
 }
 
@@ -197,7 +235,7 @@ function looksLikeColor(token: string): boolean {
  * Tracks parenthesis depth from the first '(' to find the matching closing paren,
  * so layers like `var(--g1) var(--s) calc(1.73*var(--s))` are split correctly.
  */
-function splitLayerImageAndTrailing(raw: string): { imageValue: string; trailing: string } {
+function splitLayerImageAndTrailing(raw: string): { imageValue: string, trailing: string } {
   const firstParen = raw.indexOf('(')
   if (firstParen === -1) {
     return { imageValue: raw, trailing: '' }
@@ -205,7 +243,9 @@ function splitLayerImageAndTrailing(raw: string): { imageValue: string; trailing
 
   let depth = 0
   for (let i = firstParen; i < raw.length; i++) {
-    if (raw[i] === '(') depth++
+    if (raw[i] === '(') {
+      depth++
+    }
     else if (raw[i] === ')') {
       depth--
       if (depth === 0) {
@@ -225,16 +265,18 @@ function splitLayerImageAndTrailing(raw: string): { imageValue: string; trailing
  * Parse CSS input into an ordered array of background layers (top → bottom).
  * Returns null if no background-related properties are found.
  */
-const cycle = <T,>(arr: T[], i: number): T | undefined =>
-  arr.length > 0 ? arr[i % arr.length] : undefined
+function cycle<T>(arr: T[], i: number): T | undefined {
+  return arr.length > 0 ? arr[i % arr.length] : undefined
+}
 
 export function parseCssInput(input: string): BgLayer[] | null {
-  if (!input.trim()) return null
+  if (!input.trim())
+    return null
 
   const declarations = extractDeclarations(input)
   const props = parseDeclarations(declarations)
 
-  const bgShorthand = props['background']
+  const bgShorthand = props.background
   const bgImage = props['background-image']
   const bgColor = props['background-color']
   const bgPosition = props['background-position']
@@ -245,7 +287,8 @@ export function parseCssInput(input: string): BgLayer[] | null {
   const bgClip = props['background-clip']
   const bgBlendMode = props['background-blend-mode']
 
-  if (!bgShorthand && !bgImage && !bgColor) return null
+  if (!bgShorthand && !bgImage && !bgColor)
+    return null
 
   if (bgShorthand) {
     // background shorthand: each comma-separated segment is a full layer.
@@ -276,7 +319,8 @@ export function parseCssInput(input: string): BgLayer[] | null {
       if (hasSuppProps) {
         const { imageValue, trailing } = splitLayerImageAndTrailing(rawLayer)
         raw = imageValue
-        if (trailing) embeddedPosition = trailing
+        if (trailing)
+          embeddedPosition = trailing
       }
 
       // For the last layer: if there's no explicit separate position and the
@@ -291,11 +335,12 @@ export function parseCssInput(input: string): BgLayer[] | null {
           // Single trailing token that looks like a color
           resolvedColor = embeddedPosition
           embeddedPosition = undefined
-        } else if (hasTopLevelSpace(embeddedPosition)) {
+        }
+        else if (hasTopLevelSpace(embeddedPosition)) {
           // Multiple trailing tokens — check if the last one is a color
           const tokens = splitTopLevelSpaces(embeddedPosition)
-          const lastToken = tokens[tokens.length - 1]
-          if (looksLikeColor(lastToken)) {
+          const lastToken = tokens.at(-1)
+          if (lastToken && looksLikeColor(lastToken)) {
             resolvedColor = lastToken
             embeddedPosition = tokens.slice(0, -1).join(' ') || undefined
           }
@@ -358,10 +403,14 @@ export function reconstructBackground(layers: BgLayer[]): string {
       const pos = l.position ?? '0% 0%'
       parts.push(l.size ? `${pos} / ${l.size}` : pos)
     }
-    if (l.repeat) parts.push(l.repeat)
-    if (l.attachment) parts.push(l.attachment)
-    if (l.origin) parts.push(l.origin)
-    if (l.clip) parts.push(l.clip)
+    if (l.repeat)
+      parts.push(l.repeat)
+    if (l.attachment)
+      parts.push(l.attachment)
+    if (l.origin)
+      parts.push(l.origin)
+    if (l.clip)
+      parts.push(l.clip)
     return parts.join(' ')
   }).join(',\n  ')
 }
