@@ -8,16 +8,10 @@ import { cn } from '@/lib/utils'
 
 /**
  * Build a self-contained CSS snippet to preview a single layer.
- * Preserves CSS custom properties from the original input.
+ * Preserves CSS custom properties from the live cssVars state.
  */
-function buildLayerCss(layer: BgLayer, originalCss: string): string {
-  const block = originalCss.trim().match(/\{([\s\S]*)\}/)
-  const inner = block ? block[1] : originalCss
-
-  const customProps = [...inner.matchAll(/(--[\w-]+\s*:[^;]+)/g)]
-    .map((m) => m[1].trim())
-    .join('; ')
-
+function buildLayerCss(layer: BgLayer, cssVars: { name: string; value: string }[]): string {
+  const customProps = cssVars.map((v) => `${v.name}: ${v.value}`).join('; ')
   const bgValue = reconstructBackground([layer])
   return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue} }`
 }
@@ -37,7 +31,7 @@ export function LayerCard({
   layer,
   order,
   total,
-  originalCss,
+  cssVars,
   isVisible,
   onToggleVisibility,
   onUpdate,
@@ -46,13 +40,13 @@ export function LayerCard({
   layer: BgLayer
   order: number
   total: number
-  originalCss: string
+  cssVars: { name: string; value: string }[]
   isVisible: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
   dragControls: DragControls
 }) {
-  const layerCss = buildLayerCss(layer, originalCss)
+  const layerCss = buildLayerCss(layer, cssVars)
 
   const displayNumber =
     order === 0

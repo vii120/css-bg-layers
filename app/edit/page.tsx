@@ -50,7 +50,7 @@ function DraggableLayerCard({
   layer,
   order,
   total,
-  originalCss,
+  cssVars,
   isVisible,
   onToggleVisibility,
   onUpdate,
@@ -58,7 +58,7 @@ function DraggableLayerCard({
   layer: BgLayer
   order: number
   total: number
-  originalCss: string
+  cssVars: { name: string; value: string }[]
   isVisible: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
@@ -86,7 +86,7 @@ function DraggableLayerCard({
         layer={layer}
         order={order}
         total={total}
-        originalCss={originalCss}
+        cssVars={cssVars}
         isVisible={isVisible}
         onToggleVisibility={onToggleVisibility}
         onUpdate={onUpdate}
@@ -106,7 +106,6 @@ const ASPECT_RATIOS = [
 export default function EditPage() {
   const { css: stored, setCss } = useCssStore()
   const router = useRouter()
-  const [originalCss, setOriginalCss] = useState('')
   const [layers, setLayers] = useState<BgLayer[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [hiddenLayers, setHiddenLayers] = useState<Set<number>>(new Set())
@@ -121,8 +120,7 @@ export default function EditPage() {
       setError('No CSS found. Go back and paste some CSS.')
       return
     }
-    setOriginalCss(stored)
-    const parsed = parseCssInput(stored)
+const parsed = parseCssInput(stored)
     if (!parsed || parsed.length === 0) {
       setError(
         'Could not find any background layers. Check that your CSS includes a background property.',
@@ -221,7 +219,7 @@ export default function EditPage() {
                     layer={layer}
                     order={i}
                     total={layers.length}
-                    originalCss={originalCss}
+                    cssVars={cssVars}
                     isVisible={!hiddenLayers.has(layer.index)}
                     onToggleVisibility={() => toggleLayer(layer.index)}
                     onUpdate={(field, value) =>
