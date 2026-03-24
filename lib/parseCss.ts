@@ -362,7 +362,6 @@ export function reconstructBackground(layers: BgLayer[]): string {
     if (l.attachment) parts.push(l.attachment)
     if (l.origin) parts.push(l.origin)
     if (l.clip) parts.push(l.clip)
-    if (l.color) parts.push(l.color)
     return parts.join(' ')
   }).join(',\n  ')
 }

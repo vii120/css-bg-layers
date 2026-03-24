@@ -26,10 +26,16 @@ function minimalCycle(values: string[]): string[] {
 function buildOutput(
   layers: BgLayer[],
   cssVars: { name: string; value: string }[],
+  hideColor: boolean,
 ): string {
   const customProps = cssVars.map((v) => `  ${v.name}: ${v.value};`).join('\n')
 
   const bgValue = reconstructBackground(layers)
+
+  const color = !hideColor
+    ? layers.reduce<string | undefined>((acc, l) => l.color ?? acc, undefined)
+    : undefined
+  const colorDecl = color ? `  background-color: ${color};` : ''
 
   // blend-mode can't go in the shorthand — output separately if present
   const blendModes = layers
@@ -40,7 +46,7 @@ function buildOutput(
       ? `  background-blend-mode: ${minimalCycle(blendModes).join(', ')};`
       : ''
 
-  return [customProps, `  background:\n    ${bgValue};`, blendModeDecl]
+  return [customProps, `  background:\n    ${bgValue};`, colorDecl, blendModeDecl]
     .filter(Boolean)
     .join('\n')
 }
@@ -48,15 +54,17 @@ function buildOutput(
 export function OutputCss({
   layers,
   cssVars,
+  hideColor,
 }: {
   layers: BgLayer[]
   cssVars: { name: string; value: string }[]
+  hideColor: boolean
 }) {
   const [outputText, setOutputText] = useState('')
 
   function handleOpen() {
     sendGAEvent('event', 'view_css')
-    setOutputText(buildOutput(layers, cssVars))
+    setOutputText(buildOutput(layers, cssVars, hideColor))
   }
 
   return (

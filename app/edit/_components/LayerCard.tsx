@@ -28,7 +28,6 @@ const SUB_PROP_FIELDS: { label: string; key: keyof BgLayer }[] = [
   { label: 'origin', key: 'origin' },
   { label: 'clip', key: 'clip' },
   { label: 'blend-mode', key: 'blendMode' },
-  { label: 'color', key: 'color' },
 ]
 
 export function LayerCard({
