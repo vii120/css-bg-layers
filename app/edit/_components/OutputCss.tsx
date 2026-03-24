@@ -75,7 +75,7 @@ export function OutputCss({
       >
         <DialogHeader>
           <div className="flex items-center gap-3 pr-10">
-            <DialogTitle className="text-sm font-semibold uppercase tracking-wider text-ink-muted">
+            <DialogTitle className="text-sm font-semibold uppercase tracking-wider text-ink-muted hit-area-2">
               Output CSS
             </DialogTitle>
             <CopyButton text={outputText} />
