@@ -177,14 +177,12 @@ export default function EditPage() {
           {/* Left — Variables + Layer list */}
           <div className="md:w-120 flex flex-col gap-4 min-h-0">
             {/* Layers section */}
-            <div className="flex-1 min-h-0 flex flex-col gap-2">
+            <div className="flex-1 min-h-0 flex flex-col gap-3">
               <div className="flex items-center justify-between shrink-0 pl-3 border-l-3 border-accent py-0.5">
-                <h2 className="font-semibold text-sm uppercase tracking-wider text-ink">
-                  <span className="inline-block relative">
-                    Layers
-                    <span className="absolute bottom-2/5 left-full ml-1 text-xs font-normal scale-90">
-                      ({layers.length})
-                    </span>
+                <h2 className="font-semibold text-sm uppercase tracking-wider text-ink flex items-center gap-2">
+                  Layers
+                  <span className="text-xs font-normal normal-case tracking-normal px-1.5 py-0.5 rounded bg-surface text-ink-muted">
+                    {layers.length}
                   </span>
                 </h2>
                 <button
@@ -232,17 +230,15 @@ export default function EditPage() {
 
             {/* Variables section */}
             {cssVars.length > 0 && (
-              <div className="max-h-50 flex flex-col gap-2 shrink-0">
+              <div className="max-h-50 flex flex-col gap-3 shrink-0">
                 <button
                   onClick={() => setVarsOpen((v) => !v)}
                   className="flex items-center gap-1.5 cursor-pointer pl-3 border-l-3 border-accent py-0.5"
                 >
-                  <h2 className="font-semibold text-sm uppercase tracking-wider text-ink">
-                    <span className="inline-block relative">
-                      Variables
-                      <span className="absolute bottom-2/5 left-full ml-1 text-xs font-normal scale-90">
-                        ({cssVars.length})
-                      </span>
+                  <h2 className="font-semibold text-sm uppercase tracking-wider text-ink flex items-center gap-2">
+                    Variables
+                    <span className="text-xs font-normal normal-case tracking-normal px-1.5 py-0.5 rounded bg-surface text-ink-muted">
+                      {cssVars.length}
                     </span>
                   </h2>
                   <ChevronDown
