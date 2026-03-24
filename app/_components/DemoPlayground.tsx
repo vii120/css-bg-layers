@@ -97,7 +97,7 @@ const LayerRow = memo(function LayerRow({
         className="w-4 h-4 rounded-sm shrink-0 border border-black/10"
         style={{ backgroundImage: getGradientFn(layer.value) }}
       />
-      <span className="font-mono text-[10px] text-ink-muted/50 shrink-0 w-10">
+      <span className="font-mono text-xs text-ink-muted/50 shrink-0 w-10">
         {layer.type}
       </span>
       <span className="font-mono text-xs text-ink flex-1 min-w-0 truncate">
@@ -221,7 +221,7 @@ export function DemoPlayground() {
                     <LayerRow key={layer.id} layer={layer} index={i} />
                   ))}
                 </Reorder.Group>
-                <p className="mt-2 text-[10px] text-ink-muted/40 font-mono text-center flex justify-center items-center gap-2">
+                <p className="mt-2 text-xs text-ink-muted/40 font-mono text-center flex justify-center items-center gap-2">
                   drag to reorder <ArrowUpDown size={12} />
                 </p>
               </motion.div>

@@ -104,7 +104,7 @@ const ASPECT_RATIOS = [
 ] as const
 
 export default function EditPage() {
-  const { css: stored, setCss } = useCssStore()
+  const { css: stored } = useCssStore()
   const router = useRouter()
   const [layers, setLayers] = useState<BgLayer[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -293,10 +293,7 @@ export default function EditPage() {
               </span>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => {
-                    setCss('')
-                    router.push('/')
-                  }}
+                  onClick={() => router.push('/')}
                   className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-1.5"
                 >
                   <MoveLeft size={14} />
