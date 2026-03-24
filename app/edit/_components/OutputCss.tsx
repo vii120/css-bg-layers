@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { CopyButton } from './CopyButton'
 import { Braces } from 'lucide-react'
+import { sendGAEvent } from '@next/third-parties/google'
 
 function minimalCycle(values: string[]): string[] {
   for (let k = 1; k <= Math.floor(values.length / 2); k++) {
@@ -54,6 +55,7 @@ export function OutputCss({
   const [outputText, setOutputText] = useState('')
 
   function handleOpen() {
+    sendGAEvent('event', 'view_css')
     setOutputText(buildOutput(layers, cssVars))
   }
 

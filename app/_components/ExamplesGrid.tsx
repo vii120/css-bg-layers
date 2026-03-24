@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
+import { sendGAEvent } from '@next/third-parties/google'
 import { PreviewCanvas } from './PreviewCanvas'
 import { EXAMPLES } from '@/lib/examples'
 import { parseCssInput } from '@/lib/parseCss'
@@ -29,6 +30,7 @@ export function ExamplesGrid() {
               key={ex.id}
               onClick={() => {
                 setCss(ex.css)
+                sendGAEvent('event', 'click_example', { name: ex.label })
                 router.push('/edit')
               }}
               className="text-left overflow-hidden transition-colors group border border-line rounded-md cursor-pointer"

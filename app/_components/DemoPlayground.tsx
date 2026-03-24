@@ -9,6 +9,7 @@ import {
   motion,
   useAnimationControls,
 } from 'motion/react'
+import { sendGAEvent } from '@next/third-parties/google'
 import { PreviewCanvas } from './PreviewCanvas'
 
 interface DemoLayer {
@@ -83,7 +84,10 @@ const LayerRow = memo(function LayerRow({
     >
       <span
         className="hit-area-2 shrink-0 touch-none cursor-grab active:cursor-grabbing"
-        onPointerDown={(e) => dragControls.start(e)}
+        onPointerDown={(e) => {
+          dragControls.start(e)
+          sendGAEvent('event', 'drag_demo')
+        }}
       >
         <GripVertical
           size={14}
@@ -141,9 +145,10 @@ export function DemoPlayground() {
           Playground
         </div>
         <motion.button
-          onClick={() =>
+          onClick={() => {
             setMode((prev) => (prev === 'layers' ? 'raw' : 'layers'))
-          }
+            sendGAEvent('event', 'toggle_demo')
+          }}
           className="w-40 text-xs text-ink-muted hover:text-ink transition-colors border border-line rounded-full px-4 py-1.5 hover:border-ink-muted/40 cursor-pointer"
           whileTap={{ scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 500, damping: 25 }}

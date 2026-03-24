@@ -2,6 +2,7 @@
 
 import { Eye, EyeClosed, GripVertical } from 'lucide-react'
 import { motion, type DragControls } from 'motion/react'
+import { sendGAEvent } from '@next/third-parties/google'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
 import { reconstructBackground, type BgLayer } from '@/lib/parseCss'
 import { cn } from '@/lib/utils'
@@ -72,7 +73,10 @@ export function LayerCard({
         <div className="flex items-center gap-2">
           <span
             className="hit-area-2 touch-none cursor-grab active:cursor-grabbing"
-            onPointerDown={(e) => dragControls.start(e)}
+            onPointerDown={(e) => {
+              dragControls.start(e)
+              sendGAEvent('event', 'drag_layer')
+            }}
           >
             <GripVertical
               size={14}
@@ -84,7 +88,10 @@ export function LayerCard({
           </span>
         </div>
         <motion.button
-          onClick={onToggleVisibility}
+          onClick={() => {
+            sendGAEvent('event', 'toggle_layer_visibility')
+            onToggleVisibility()
+          }}
           className="text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-3"
           aria-label={isVisible ? 'Hide layer' : 'Show layer'}
           whileTap={{ scale: 0.8 }}
@@ -109,6 +116,7 @@ export function LayerCard({
             style={{ fieldSizing: 'content' } as React.CSSProperties}
             value={layer.raw}
             onChange={(e) => onUpdate('raw', e.target.value)}
+            onBlur={() => sendGAEvent('event', 'edit_layer')}
             spellCheck={false}
             rows={1}
             disabled={!isVisible}
@@ -122,6 +130,7 @@ export function LayerCard({
                     className="select-text font-mono text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface transition-colors disabled:pointer-events-none"
                     value={layer[key] as string}
                     onChange={(e) => onUpdate(key, e.target.value)}
+                    onBlur={() => sendGAEvent('event', 'edit_layer')}
                     spellCheck={false}
                     disabled={!isVisible}
                   />

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ChevronDown, Eye, EyeOff, MoveLeft } from 'lucide-react'
 import { motion, AnimatePresence, Reorder, useDragControls } from 'motion/react'
+import { sendGAEvent } from '@next/third-parties/google'
 import { cn } from '@/lib/utils'
 import {
   parseCssInput,
@@ -186,11 +187,14 @@ export default function EditPage() {
                   </span>
                 </h2>
                 <button
-                  onClick={() =>
+                  onClick={() => {
+                    sendGAEvent('event', 'toggle_all_layers', {
+                      name: hiddenLayers.size > 0 ? 'show' : 'hide',
+                    })
                     hiddenLayers.size > 0
                       ? setHiddenLayers(new Set())
                       : setHiddenLayers(new Set(layers.map((l) => l.index)))
-                  }
+                  }}
                   className="mr-3 flex items-center gap-1 text-xs text-ink-muted hover:text-ink transition-colors cursor-pointer hit-area-2"
                   title={hiddenLayers.size > 0 ? 'Show all' : 'Hide all'}
                 >
@@ -232,7 +236,10 @@ export default function EditPage() {
             {cssVars.length > 0 && (
               <div className="max-h-50 flex flex-col gap-3 shrink-0">
                 <button
-                  onClick={() => setVarsOpen((v) => !v)}
+                  onClick={() => {
+                    sendGAEvent('event', 'toggle_variables_panel')
+                    setVarsOpen((v) => !v)
+                  }}
                   className="flex items-center gap-1.5 cursor-pointer pl-3 border-l-3 border-accent py-0.5"
                 >
                   <h2 className="font-semibold text-sm uppercase tracking-wider text-ink flex items-center gap-2">
@@ -293,7 +300,10 @@ export default function EditPage() {
               </span>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => router.push('/')}
+                  onClick={() => {
+                    sendGAEvent('event', 'click_new_analysis')
+                    router.push('/')
+                  }}
                   className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-1.5"
                 >
                   <MoveLeft size={14} />
@@ -323,7 +333,12 @@ export default function EditPage() {
               {ASPECT_RATIOS.map((r) => (
                 <button
                   key={r.label}
-                  onClick={() => setAspectRatio(r)}
+                  onClick={() => {
+                    sendGAEvent('event', 'change_aspect_ratio', {
+                      name: r.label,
+                    })
+                    setAspectRatio(r)
+                  }}
                   className={cn(
                     'px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer',
                     r.label === aspectRatio.label

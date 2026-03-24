@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Layers } from 'lucide-react'
 import { motion } from 'motion/react'
+import { sendGAEvent } from '@next/third-parties/google'
 import { CssEditor, type CssEditorHandle } from '../CssEditor'
 import { PreviewCanvas } from './PreviewCanvas'
 import { useCssStore } from '@/lib/store'
@@ -23,8 +24,10 @@ export function CssInputSection({
     const layers = parseCssInput(css)
     if (!layers) {
       toast.error('No background properties found in the input.')
+      sendGAEvent('event', 'click_analysis', { name: 'failed' })
       return
     }
+    sendGAEvent('event', 'click_analysis', { name: 'success' })
     router.push('/edit')
   }
 
@@ -43,11 +46,12 @@ export function CssInputSection({
               CSS input
             </span>
             <button
-              onClick={() =>
+              onClick={() => {
+                sendGAEvent('event', 'click_try_example')
                 document
                   .getElementById('examples')
                   ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-              }
+              }}
               className="text-xs text-ink-muted/50 hover:text-ink-muted transition-colors cursor-pointer hit-area-2"
             >
               or try an example ↓

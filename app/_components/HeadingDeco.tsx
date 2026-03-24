@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { motion, useAnimationFrame, useReducedMotion } from 'motion/react'
+import { sendGAEvent } from '@next/third-parties/google'
 import { cn } from '@/lib/utils'
 import { useCssStore } from '@/lib/store'
 
@@ -91,6 +92,8 @@ export function HeadingDeco() {
           }}
           onClick={() => {
             if (!d.css) return
+
+            sendGAEvent('event', 'click_deco', { name: i })
             setCss(d.css)
             document
               .getElementById('css-input')

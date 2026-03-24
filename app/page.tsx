@@ -8,6 +8,7 @@ import { DemoPlayground } from './_components/DemoPlayground'
 import { HomeHero } from './_components/HomeHero'
 import { CssInputSection } from './_components/CssInputSection'
 import { ExamplesGrid } from './_components/ExamplesGrid'
+import { sendGAEvent } from '@next/third-parties/google'
 
 export default function Home() {
   const editorRef = useRef<CssEditorHandle>(null)
@@ -17,6 +18,7 @@ export default function Home() {
       .getElementById('css-input')
       ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     setTimeout(() => editorRef.current?.focus(), 400)
+    sendGAEvent('event', 'try_css_input')
   }
 
   return (
