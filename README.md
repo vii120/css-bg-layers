@@ -1,6 +1,10 @@
-# bg-layer-editor
+# bg.layers
 
 A CSS background layer debugger and editor. Paste a `background` shorthand or individual `background-*` properties, inspect each layer, reorder or hide them, and copy the output CSS.
+
+**[bg-layers.vercel.app](https://bg-layers.vercel.app/)**
+
+![bg.layers screenshot](public/readme.png)
 
 ## Supported Properties
 
