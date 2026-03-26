@@ -90,6 +90,10 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+::selection {
+  background: #e4e0da;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
