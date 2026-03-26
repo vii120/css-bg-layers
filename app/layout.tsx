@@ -38,7 +38,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'bg.layers - Instantly Visualize CSS Background Layers',
+  title: 'bg.layers - Visualize and Edit CSS Background Layers',
   description:
     'A powerful CSS background tool to split, visualize, and edit multiple background layers in complex CSS designs. Make every layer easy to see, understand, and manage.',
   icons: {
