@@ -12,7 +12,11 @@ import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import './globals.css'
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans', display: 'swap' })
+const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -34,7 +38,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'bg.layers - CSS Background Layer Editor',
+  title: 'bg.layers - Instantly Visualize CSS Background Layers',
   description:
     'A powerful CSS background tool to split, visualize, and edit multiple background layers in complex CSS designs. Make every layer easy to see, understand, and manage.',
   icons: {
@@ -75,7 +79,12 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <header className="px-4 md:px-8 h-16 flex items-center shrink-0 border-b border-line">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="bg.layers logo" width={28} height={28} />
+            <Image
+              src="/logo.png"
+              alt="bg.layers logo"
+              width={28}
+              height={28}
+            />
             <span className="text-[1.35rem] font-bold tracking-tight">
               bg.layers
             </span>
