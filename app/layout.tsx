@@ -33,8 +33,7 @@ const bricolage = Bricolage_Grotesque({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
-  display: 'optional',
-  preload: false,
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
