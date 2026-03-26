@@ -6,26 +6,31 @@ import {
   Geist_Mono,
   Space_Grotesk,
 } from 'next/font/google'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import './globals.css'
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans', display: 'swap' })
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
   subsets: ['latin'],
+  display: 'swap',
 })
 
 const bricolage = Bricolage_Grotesque({
   variable: '--font-bricolage',
   subsets: ['latin'],
+  display: 'swap',
 })
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+  display: 'optional',
+  preload: false,
 })
 
 export const metadata: Metadata = {
@@ -70,7 +75,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <header className="px-4 md:px-8 h-16 flex items-center shrink-0 border-b border-line">
           <Link href="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="bg.layers logo" className="w-7" />
+            <Image src="/logo.png" alt="bg.layers logo" width={28} height={28} />
             <span className="text-[1.35rem] font-bold tracking-tight">
               bg.layers
             </span>
