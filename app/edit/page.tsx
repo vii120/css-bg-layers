@@ -281,7 +281,7 @@ export default function EditPage() {
                     sendGAEvent('event', 'click_new_analysis')
                     router.push('/')
                   }}
-                  className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer font-mono flex items-center gap-1.5"
+                  className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer flex items-center gap-1.5"
                 >
                   <MoveLeft size={14} />
                   New analysis

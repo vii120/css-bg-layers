@@ -20,7 +20,7 @@ interface Props {
 export function AspectRatioPicker({ current, onChange }: Props) {
   return (
     <div className="flex justify-center items-center gap-1 shrink-0">
-      {ASPECT_RATIOS.map(r => (
+      {ASPECT_RATIOS.map((r) => (
         <button
           key={r.label}
           onClick={() => {
@@ -28,7 +28,7 @@ export function AspectRatioPicker({ current, onChange }: Props) {
             onChange(r)
           }}
           className={cn(
-            'px-2.5 py-1 rounded text-xs font-mono transition-colors cursor-pointer',
+            'px-2.5 py-1 rounded text-xs transition-colors cursor-pointer',
             r.label === current.label
               ? 'bg-accent text-white'
               : 'text-ink-muted hover:text-ink hover:bg-surface',
