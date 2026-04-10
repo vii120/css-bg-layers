@@ -4,6 +4,7 @@ import type { BgLayer } from '@/lib/parseCss'
 import { Eye, EyeClosed } from 'lucide-react'
 import { motion } from 'motion/react'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
+import { ColorDot } from './ColorDot'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -41,7 +42,11 @@ export function BackgroundColorCard({ layer, colorHidden, onToggleVisibility, on
             className="w-full h-full"
           />
         </div>
-        <div className="flex-1 px-3.5 py-3 min-w-0 flex items-center">
+        <div className={cn('flex-1 px-3.5 py-3 min-w-0 flex items-center', colorHidden && 'pointer-events-none')}>
+          <ColorDot
+            colorStr={layer.color!}
+            onPick={(hex) => onUpdate('color', hex)}
+          />
           <input
             className="select-text font-mono text-xs text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors disabled:pointer-events-none"
             value={layer.color!}
