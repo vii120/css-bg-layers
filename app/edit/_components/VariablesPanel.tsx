@@ -15,6 +15,7 @@ interface Props {
 
 export function VariablesPanel({ cssVars, onUpdate }: Props) {
   const [open, setOpen] = useState(true)
+  const [editingVar, setEditingVar] = useState<string | null>(null)
 
   return (
     <div className="max-h-50 flex flex-col gap-3 shrink-0">
@@ -56,7 +57,7 @@ export function VariablesPanel({ cssVars, onUpdate }: Props) {
                   >
                     <span className="text-ink-muted shrink-0">{v.name}</span>
                     <span className="flex items-center flex-1 min-w-0">
-                      {colorToken && (
+                      {colorToken && editingVar !== v.name && (
                         <ColorDot
                           colorStr={colorToken.raw}
                           onPick={(hex) => onUpdate(v.name, hex)}
@@ -66,6 +67,8 @@ export function VariablesPanel({ cssVars, onUpdate }: Props) {
                         className="select-text text-ink w-full bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors"
                         value={v.value}
                         onChange={e => onUpdate(v.name, e.target.value)}
+                        onFocus={() => setEditingVar(v.name)}
+                        onBlur={() => setEditingVar(null)}
                         spellCheck={false}
                       />
                     </span>
