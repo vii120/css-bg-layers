@@ -17,7 +17,7 @@ export function ColorDot({
   colorStr: string
   onPick: (hex: string) => void
 }) {
-  const hex = useMemo(() => cssColorToHex(colorStr, true), [colorStr])
+  const hex = useMemo(() => cssColorToHex(colorStr), [colorStr])
   // Store as HSVA so the picker controls move correctly AND hue is preserved —
   // passing hex would re-derive HSV on every render, losing hue for near-grays.
   const [hsva, setHsva] = useState<HsvaColor>(() =>
@@ -25,14 +25,18 @@ export function ColorDot({
   )
 
   return (
-    <Popover onOpenChange={(open) => {
-      if (open) setHsva(hexToHsva(cssColorToHex(colorStr)))
-    }}>
+    <Popover
+      onOpenChange={(open) => {
+        if (open) setHsva(hexToHsva(cssColorToHex(colorStr)))
+      }}
+    >
       <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
           title={colorStr}
-          style={{ backgroundColor: hex }}
+          style={{
+            background: `linear-gradient(${hex}, ${hex}), repeating-conic-gradient(var(--color-surface) 0% 25%, transparent 0% 50%) 0 0 / 5px 5px`,
+          }}
           className="w-2.5 aspect-square rounded-[2px] border border-black/20 cursor-pointer inline-block align-middle mr-1 relative -top-px shrink-0 hover:scale-125 transition-transform duration-100"
         />
       </PopoverTrigger>
