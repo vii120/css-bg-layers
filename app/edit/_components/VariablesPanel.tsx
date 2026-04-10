@@ -4,6 +4,8 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { ChevronDown } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
+import { parseColorTokens } from '@/lib/colorUtils'
+import { ColorDot } from './ColorDot'
 import { cn } from '@/lib/utils'
 
 interface Props {
@@ -44,20 +46,32 @@ export function VariablesPanel({ cssVars, onUpdate }: Props) {
             className="overflow-hidden"
           >
             <div className="max-h-50 overflow-auto flex flex-col gap-1">
-              {cssVars.map(v => (
-                <div
-                  key={v.name}
-                  className="shrink-0 flex gap-3 text-xs font-mono px-3 py-1.5 rounded bg-surface border border-line"
-                >
-                  <span className="text-ink-muted shrink-0">{v.name}</span>
-                  <input
-                    className="select-text text-ink flex-1 min-w-0 bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors"
-                    value={v.value}
-                    onChange={e => onUpdate(v.name, e.target.value)}
-                    spellCheck={false}
-                  />
-                </div>
-              ))}
+              {cssVars.map((v) => {
+                const tokens = parseColorTokens(v.value.trim())
+                const colorToken = tokens.length === 1 && tokens[0].raw === v.value.trim() ? tokens[0] : null
+                return (
+                  <div
+                    key={v.name}
+                    className="shrink-0 flex items-center gap-3 text-xs font-mono px-3 py-1.5 rounded bg-surface border border-line"
+                  >
+                    <span className="text-ink-muted shrink-0">{v.name}</span>
+                    <span className="flex items-center flex-1 min-w-0">
+                      {colorToken && (
+                        <ColorDot
+                          colorStr={colorToken.raw}
+                          onPick={(hex) => onUpdate(v.name, hex)}
+                        />
+                      )}
+                      <input
+                        className="select-text text-ink w-full bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors"
+                        value={v.value}
+                        onChange={e => onUpdate(v.name, e.target.value)}
+                        spellCheck={false}
+                      />
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           </motion.div>
         )}
