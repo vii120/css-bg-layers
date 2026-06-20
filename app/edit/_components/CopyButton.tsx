@@ -2,11 +2,12 @@
 
 import { sendGAEvent } from '@next/third-parties/google'
 import { CheckCircle, Copy } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 
 export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
+  const reduceMotion = useReducedMotion()
 
   function handleCopy() {
     if (copied)
@@ -31,10 +32,10 @@ export function CopyButton({ text }: { text: string }) {
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.div
           key={copied ? 'copied' : 'copy'}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ type: 'spring', duration: 0.25 }}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 4, filter: 'blur(2px)' }}
+          animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -4, filter: 'blur(2px)' }}
+          transition={{ duration: reduceMotion ? 0 : 0.15, ease: 'easeInOut' }}
           className="flex justify-center items-center gap-1.5"
         >
           {copied
