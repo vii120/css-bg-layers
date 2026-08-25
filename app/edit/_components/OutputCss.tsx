@@ -86,7 +86,7 @@ export function OutputCss({
       </DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
-        className="max-w-2xl bg-canvas border-line"
+        className="md:max-w-2xl bg-canvas border-line"
       >
         <DialogHeader>
           <div className="flex items-center gap-3 pr-10">
