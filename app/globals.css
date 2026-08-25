@@ -244,3 +244,38 @@ body {
     pointer-events: inherit;
   }
 }
+/* Syntax highlighting — CSS Custom Highlight API (microlighter).
+   Categories are microlighter's flattened TextMate scopes; the CSS grammar
+   emits exactly these. Palette ported from the previous editor theme.
+   `selector` is intentionally unstyled — it inherited plain ink before too. */
+::highlight(property) {
+  color: #c2410c;
+}
+::highlight(variable) {
+  color: #0e7490;
+}
+::highlight(at-rule),
+::highlight(important) {
+  color: #7c3aed;
+}
+::highlight(function),
+::highlight(animation) {
+  color: #2563eb;
+}
+::highlight(numeric) {
+  color: #d97706;
+}
+::highlight(string) {
+  color: #059669;
+}
+::highlight(constant) {
+  color: #9333ea;
+}
+::highlight(comment) {
+  color: #a8a29e;
+  font-style: italic;
+}
+::highlight(operator),
+::highlight(punctuation) {
+  color: #78716c;
+}

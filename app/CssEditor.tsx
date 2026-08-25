@@ -1,93 +1,62 @@
 'use client'
 
-import { css } from '@codemirror/lang-css'
-import { syntaxHighlighting } from '@codemirror/language'
-import { EditorState } from '@codemirror/state'
-import { placeholder as cmPlaceholder } from '@codemirror/view'
-import { EditorView, minimalSetup } from 'codemirror'
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
-import { baseEditorTheme, highlightStyle } from '@/lib/cmTheme'
+import type { Ref } from 'react'
+import { useEffect, useRef } from 'react'
+import { highlightCss } from '@/lib/syntax'
+import { cn } from '@/lib/utils'
 
-const editorTheme = EditorView.theme(
-  {
-    '&': {
-      height: '100%',
-      fontSize: '13px',
-      fontFamily: 'var(--font-geist-mono), monospace',
-    },
-    '.cm-content': {
-      padding: '1rem',
-    },
-    '.cm-focused .cm-cursor': {
-      borderLeftColor: '#3b52d4',
-    },
-    '.cm-placeholder': {
-      color: '#b0a89e',
-      fontStyle: 'normal',
-    },
-  },
-  { dark: false },
-)
+// Both layers must break lines identically or the caret drifts off the glyphs.
+const typeStyles
+  = 'm-0 p-4 font-mono text-[13px] leading-[1.65] whitespace-pre-wrap break-words'
 
-export interface CssEditorHandle {
-  focus: () => void
-}
-
-export const CssEditor = forwardRef<
-  CssEditorHandle,
-  {
-    value: string
-    onChange: (v: string) => void
-    placeholder?: string
-    className?: string
-    style?: React.CSSProperties
-  }
->(({ value, onChange, placeholder, className, style }, ref) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const viewRef = useRef<EditorView | null>(null)
-
-  useImperativeHandle(ref, () => ({
-    focus: () => viewRef.current?.focus(),
-  }))
+export function CssEditor({
+  value,
+  onChange,
+  placeholder,
+  className,
+  ref,
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  className?: string
+  ref?: Ref<HTMLTextAreaElement>
+}) {
+  const preRef = useRef<HTMLPreElement>(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
-
-    const extensions = [
-      minimalSetup,
-      css(),
-      baseEditorTheme,
-      editorTheme,
-      syntaxHighlighting(highlightStyle),
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          onChange(update.state.doc.toString())
-        }
-      }),
-      EditorView.lineWrapping,
-      ...(placeholder ? [cmPlaceholder(placeholder)] : []),
-    ]
-
-    const state = EditorState.create({ doc: value, extensions })
-    const view = new EditorView({ state, parent: containerRef.current })
-    viewRef.current = view
-
-    return () => {
-      view.destroy()
-      viewRef.current = null
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Sync external value changes (e.g. clicking an example card)
-  useEffect(() => {
-    const view = viewRef.current
-    if (!view) return
-    if (view.state.doc.toString() === value) return
-    view.dispatch({
-      changes: { from: 0, to: view.state.doc.length, insert: value },
-    })
+    highlightCss()
   }, [value])
 
-  return <div ref={containerRef} className={className} style={style} />
-})
+  return (
+    <div className={cn('relative', className)}>
+      <pre
+        ref={preRef}
+        aria-hidden
+        className={cn(typeStyles, 'absolute inset-0 overflow-hidden')}
+      >
+        {/* Trailing newline gives the last line height when the caret sits on it. */}
+        <code className="language-css">{`${value}\n`}</code>
+      </pre>
+      <textarea
+        ref={ref}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        onScroll={e => preRef.current?.scrollTo(e.currentTarget.scrollLeft, e.currentTarget.scrollTop)}
+        placeholder={placeholder}
+        aria-label="CSS input"
+        spellCheck={false}
+        autoCapitalize="off"
+        autoCorrect="off"
+        className={cn(
+          typeStyles,
+          'absolute inset-0 resize-none outline-none',
+          'bg-transparent text-transparent caret-[#3b52d4]',
+          'placeholder:text-[#b0a89e] selection:bg-[#3b52d4]/15',
+          // Hidden so the textarea's content width matches the <pre> and lines wrap alike.
+          '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+        )}
+      />
+    </div>
+  )
+}

@@ -1,6 +1,5 @@
 'use client'
 
-import type { CssEditorHandle } from './CssEditor'
 import { sendGAEvent } from '@next/third-parties/google'
 import { motion } from 'motion/react'
 import { useRef } from 'react'
@@ -11,7 +10,7 @@ import { Footer } from './_components/Footer'
 import { HomeHero } from './_components/HomeHero'
 
 export default function Home() {
-  const editorRef = useRef<CssEditorHandle>(null)
+  const editorRef = useRef<HTMLTextAreaElement>(null)
 
   function scrollToEditor() {
     document

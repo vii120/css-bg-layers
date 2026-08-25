@@ -1,7 +1,6 @@
 'use client'
 
 import type { RefObject } from 'react'
-import type { CssEditorHandle } from '../CssEditor'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Layers } from 'lucide-react'
 import { motion } from 'motion/react'
@@ -15,7 +14,7 @@ import { PreviewCanvas } from './PreviewCanvas'
 export function CssInputSection({
   editorRef,
 }: {
-  editorRef: RefObject<CssEditorHandle | null>
+  editorRef: RefObject<HTMLTextAreaElement | null>
 }) {
   const { css, setCss } = useCssStore()
   const hasInput = css.trim().length > 0

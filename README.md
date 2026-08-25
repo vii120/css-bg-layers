@@ -23,7 +23,7 @@ Run `npm run dev` to start the development server.
 
 ## Credits
 
-- [CodeMirror](https://codemirror.net)
+- [MicroLighter](https://davatron5000.github.io/microlighter/)
 - [Motion](https://motion.dev)
 - [shadcn/ui](https://ui.shadcn.com)
 - [hit-area](https://bazza.dev/craft/2026/hit-area)
