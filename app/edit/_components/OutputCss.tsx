@@ -29,14 +29,14 @@ function buildOutput(
   cssVars: { name: string; value: string }[],
   hideColor: boolean,
 ): string {
-  const customProps = cssVars.map((v) => `  ${v.name}: ${v.value};`).join('\n')
+  const customProps = cssVars.map((v) => `${v.name}: ${v.value};`).join('\n')
 
   const bgValue = reconstructBackground(layers)
 
   const color = !hideColor
     ? layers.reduce<string | undefined>((acc, l) => l.color ?? acc, undefined)
     : undefined
-  const colorDecl = color ? `  background-color: ${color};` : ''
+  const colorDecl = color ? `background-color: ${color};` : ''
 
   // blend-mode can't go in the shorthand — output separately if present
   const blendModes = layers
@@ -44,12 +44,12 @@ function buildOutput(
     .filter((v): v is string => !!v)
   const blendModeDecl =
     blendModes.length === layers.length
-      ? `  background-blend-mode: ${minimalCycle(blendModes).join(', ')};`
+      ? `background-blend-mode: ${minimalCycle(blendModes).join(', ')};`
       : ''
 
   return [
     customProps,
-    `  background:\n    ${bgValue};`,
+    `background:\n  ${bgValue};`,
     colorDecl,
     blendModeDecl,
   ]
