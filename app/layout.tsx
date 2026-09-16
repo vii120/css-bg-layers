@@ -37,6 +37,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bg-layers.vercel.app'),
+  alternates: { canonical: '/' },
   title: 'bg.layers - Visualize and Edit CSS Background Layers',
   description:
     'A powerful CSS background tool to split, visualize, and edit multiple background layers in complex CSS designs. Make every layer easy to see, understand, and manage.',
