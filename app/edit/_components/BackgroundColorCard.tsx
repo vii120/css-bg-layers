@@ -11,17 +11,20 @@ import { ColorDot } from './ColorDot'
 interface Props {
   layer: BgLayer
   colorHidden: boolean
+  isActive?: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
 }
 
-export function BackgroundColorCard({ layer, colorHidden, onToggleVisibility, onUpdate }: Props) {
+export function BackgroundColorCard({ layer, colorHidden, isActive, onToggleVisibility, onUpdate }: Props) {
   const [editing, setEditing] = useState(false)
 
   return (
     <div
+      data-layer-key="color"
       className={cn(
-        'shrink-0 rounded-md border border-line bg-canvas overflow-hidden transition-opacity',
+        'shrink-0 rounded-md border bg-canvas overflow-hidden transition-[opacity,border-color]',
+        isActive ? 'border-accent' : 'border-line',
         colorHidden && 'opacity-40',
       )}
     >

@@ -87,6 +87,7 @@ export function LayerCard({
   total,
   cssVars,
   isVisible,
+  isActive,
   onToggleVisibility,
   onUpdate,
   dragControls,
@@ -96,6 +97,7 @@ export function LayerCard({
   total: number
   cssVars: { name: string; value: string }[]
   isVisible: boolean
+  isActive?: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
   dragControls: DragControls
@@ -122,7 +124,8 @@ export function LayerCard({
   return (
     <div
       className={cn(
-        'rounded-md border border-line overflow-hidden bg-canvas transition-opacity select-none',
+        'rounded-md border overflow-hidden bg-canvas transition-[opacity,border-color] select-none',
+        isActive ? 'border-accent' : 'border-line',
         !isVisible && 'opacity-40',
       )}
     >

@@ -1,14 +1,14 @@
 'use client'
 
 import type { AspectRatio } from './_components/AspectRatioPicker'
+import type { Plane } from './_components/LayerStack'
 import type { BgLayer } from '@/lib/parseCss'
 import { sendGAEvent } from '@next/third-parties/google'
-import { Eye, EyeClosed, MoveLeft } from 'lucide-react'
+import { Eye, EyeClosed, Layers2, MoveLeft } from 'lucide-react'
 import { motion, Reorder, useDragControls } from 'motion/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
+import { useEffect, useRef, useState } from 'react'
 import { parseCssInput, reconstructBackground } from '@/lib/parseCss'
 import { useCssStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
@@ -18,41 +18,13 @@ import {
 } from './_components/AspectRatioPicker'
 import { BackgroundColorCard } from './_components/BackgroundColorCard'
 import { LayerCard } from './_components/LayerCard'
+import { CURVE_BACK, CURVE_OUT, LayerStack, stackOverflow } from './_components/LayerStack'
 import { OutputCss } from './_components/OutputCss'
 import { VariablesPanel } from './_components/VariablesPanel'
 
-function buildFilteredPreviewCss(
-  cssVars: { name: string; value: string }[],
-  layers: BgLayer[],
-  hiddenIndices: Set<number>,
-  hideColor: boolean,
-): string {
-  const customProps = cssVars.map((v) => `${v.name}: ${v.value}`).join('; ')
-
-  const visibleLayers = layers.filter((l) => !hiddenIndices.has(l.index))
-  const color = !hideColor
-    ? layers.reduce<string | undefined>((acc, l) => l.color ?? acc, undefined)
-    : undefined
-
-  if (visibleLayers.length === 0 && !color) return ''
-
-  const decls: string[] = []
-
-  if (visibleLayers.length > 0) {
-    decls.push(`background: ${reconstructBackground(visibleLayers)}`)
-  } else {
-    // No image layers — reset background so a previous render doesn't bleed through
-    decls.push('background: none')
-  }
-
-  if (color) decls.push(`background-color: ${color}`)
-
-  const blendModes = visibleLayers.map((l) => l.blendMode).filter(Boolean)
-  if (blendModes.length > 0)
-    decls.push(`background-blend-mode: ${blendModes.join(', ')}`)
-
-  const customPropsStr = customProps ? `${customProps}; ` : ''
-  return `div { ${customPropsStr}${decls.join('; ')} }`
+function planeCss(cssVars: { name: string; value: string }[], decls: string) {
+  const customProps = cssVars.map((v) => `${v.name}: ${v.value}; `).join('')
+  return `div { ${customProps}${decls} }`
 }
 
 function extractCssVariables(css: string): { name: string; value: string }[] {
@@ -70,6 +42,7 @@ function DraggableLayerCard({
   total,
   cssVars,
   isVisible,
+  isActive,
   onToggleVisibility,
   onUpdate,
 }: {
@@ -78,6 +51,7 @@ function DraggableLayerCard({
   total: number
   cssVars: { name: string; value: string }[]
   isVisible: boolean
+  isActive: boolean
   onToggleVisibility: () => void
   onUpdate: (field: keyof BgLayer, value: string) => void
 }) {
@@ -87,6 +61,7 @@ function DraggableLayerCard({
       value={layer}
       dragListener={false}
       dragControls={dragControls}
+      data-layer-key={layer.index}
       className="shrink-0"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
@@ -106,6 +81,7 @@ function DraggableLayerCard({
         total={total}
         cssVars={cssVars}
         isVisible={isVisible}
+        isActive={isActive}
         onToggleVisibility={onToggleVisibility}
         onUpdate={onUpdate}
         dragControls={dragControls}
@@ -123,6 +99,9 @@ export default function EditPage() {
   const [cssVars, setCssVars] = useState<{ name: string; value: string }[]>([])
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>(ASPECT_RATIOS[0])
   const [colorHidden, setColorHidden] = useState(false)
+  const [is3d, setIs3d] = useState(false)
+  const [selectedKey, setSelectedKey] = useState<string | number | null>(null)
+  const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
     if (!stored) {
@@ -165,9 +144,47 @@ export default function EditPage() {
   }
 
   const visibleLayers = layers?.filter((l) => !hiddenLayers.has(l.index)) ?? []
-  const previewCss = layers
-    ? buildFilteredPreviewCss(cssVars, layers, hiddenLayers, colorHidden)
-    : ''
+  // One plane per visible layer (top first), plus the background color at the bottom
+  const color = colorHidden
+    ? undefined
+    : layers?.reduce<string | undefined>((acc, l) => l.color ?? acc, undefined)
+  // Like real CSS, background-color is clipped by the bottom layer's background-clip
+  const bottomClip = visibleLayers.at(-1)?.clip
+  const planes: Plane[] = [
+    ...visibleLayers.map((l) => ({
+      key: l.index,
+      label: `layer ${layers!.indexOf(l) + 1}`,
+      css: planeCss(cssVars, `background: ${reconstructBackground([l])}`),
+      blend: l.blendMode,
+    })),
+    ...(color
+      ? [{
+          key: 'color',
+          label: 'background color',
+          css: planeCss(cssVars, `background-color: ${color}${bottomClip ? `; background-clip: ${bottomClip}` : ''}`),
+        }]
+      : []),
+  ]
+  // Selected plane in 3D; falls back to the top one (e.g. if it gets hidden)
+  const activeKey = planes.some((p) => p.key === selectedKey)
+    ? selectedKey!
+    : planes[0]?.key
+
+  function selectLayer(key: string | number) {
+    setSelectedKey(key)
+    const list = listRef.current
+    const card = list?.querySelector(`[data-layer-key="${key}"]`)
+    if (!list || !card) return
+    // ponytail: manual "nearest" so only the layer list scrolls; scrollIntoView would also scroll the page
+    const l = list.getBoundingClientRect()
+    const c = card.getBoundingClientRect()
+    const delta = c.top < l.top ? c.top - l.top : c.bottom > l.bottom ? c.bottom - l.bottom : 0
+    if (!delta) return
+    list.scrollTo({
+      top: list.scrollTop + delta,
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    })
+  }
 
   return (
     <main className="md:h-[calc(100dvh-4rem)] w-full mx-auto px-4 md:px-8 py-6 md:py-10 flex flex-col-reverse md:flex-row gap-6 md:gap-8 bg-canvas text-ink">
@@ -226,6 +243,7 @@ export default function EditPage() {
                 </button>
               </div>
               <Reorder.Group
+                ref={listRef}
                 axis="y"
                 values={layers}
                 onReorder={setLayers}
@@ -239,6 +257,7 @@ export default function EditPage() {
                     total={layers.length}
                     cssVars={cssVars}
                     isVisible={!hiddenLayers.has(layer.index)}
+                    isActive={is3d && activeKey === layer.index}
                     onToggleVisibility={() => toggleLayer(layer.index)}
                     onUpdate={(field, value) =>
                       updateLayer(layer.index, field, value)
@@ -253,6 +272,7 @@ export default function EditPage() {
                     <BackgroundColorCard
                       layer={layerWithColor}
                       colorHidden={colorHidden}
+                      isActive={is3d && activeKey === 'color'}
                       onToggleVisibility={() => setColorHidden((v) => !v)}
                       onUpdate={(field, value) =>
                         updateLayer(layerWithColor.index, field, value)
@@ -293,27 +313,57 @@ export default function EditPage() {
                 />
               </div>
             </div>
-            <div className="md:flex-1 h-75 md:h-auto flex items-center justify-center overflow-hidden">
+            {/* center-safe: when the 3D stack overflows, scroll reaches its top too */}
+            <div className="md:flex-1 h-75 md:h-auto min-h-0 flex items-center-safe justify-center-safe overflow-auto">
               <motion.div
                 layout
                 style={{
                   aspectRatio: aspectRatio.ratio,
-                  transition: 'aspect-ratio 0.3s ease',
+                  // Transforms don't take up layout space, so reserve room for the spread stack
+                  marginBlock: is3d ? stackOverflow(planes.length) / 2 : 0,
+                  transition: `aspect-ratio 0.3s ease, margin 0.7s ${is3d ? CURVE_OUT : CURVE_BACK}`,
                 }}
                 className={cn(
-                  'rounded-md overflow-hidden bg-surface border border-line',
+                  'relative',
                   aspectRatio.label === '9:16'
                     ? 'h-full'
                     : 'w-full max-w-72 md:max-w-150',
                 )}
               >
-                <PreviewCanvas css={previewCss} className="w-full h-full" />
+                <LayerStack
+                  planes={planes}
+                  is3d={is3d}
+                  active={activeKey}
+                  onSelect={selectLayer}
+                />
               </motion.div>
             </div>
-            <AspectRatioPicker
-              current={aspectRatio}
-              onChange={setAspectRatio}
-            />
+            <div className="flex justify-center items-center gap-1">
+              <AspectRatioPicker
+                current={aspectRatio}
+                onChange={setAspectRatio}
+              />
+              <span className="w-px h-4 mx-1 bg-line" />
+              <button
+                onClick={() => {
+                  sendGAEvent('event', 'toggle_3d', {
+                    name: is3d ? 'off' : 'on',
+                  })
+                  setIs3d((v) => !v)
+                }}
+                aria-pressed={is3d}
+                title="Explode layers in 3D"
+                className={cn(
+                  'px-2.5 py-1 rounded text-xs transition-colors cursor-pointer flex items-center gap-1',
+                  is3d
+                    ? 'bg-accent text-white'
+                    : 'text-ink-muted hover:text-ink hover:bg-surface',
+                )}
+              >
+                <Layers2 size={12} />
+                3D
+              </button>
+            </div>
           </div>
         </>
       )}
