@@ -52,7 +52,7 @@ export function HeadingDeco() {
   const { setCss } = useCssStore()
   const mouseRef = useRef({ x: 0, y: 0 })
   const elemsRef = useRef<(HTMLDivElement | null)[]>([])
-  const posRef = useRef<{ x: number, y: number }[]>([])
+  const posRef = useRef<{ x: number; y: number }[]>([])
 
   useEffect(() => {
     if (reduceMotion)

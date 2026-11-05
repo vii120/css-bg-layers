@@ -1,6 +1,6 @@
 // Matches hex colors and CSS functional color notations (rgb, hsl, oklch, etc.)
 const COLOR_RE =
-  /(?:#[0-9a-fA-F]{3,8}|(?:rgba?|hsla?|oklch|oklab|lab|lch|color)\s*\([^)]+\))/gi
+  /(?:#[0-9a-f]{3,8}|(?:rgba?|hsla?|oklch|oklab|lab|lch|color)\s*\([^)]+\))/gi
 
 export interface ColorToken {
   start: number

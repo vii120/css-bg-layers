@@ -6,8 +6,8 @@ import { highlightCss } from '@/lib/syntax'
 import { cn } from '@/lib/utils'
 
 // Both layers must break lines identically or the caret drifts off the glyphs.
-const typeStyles
-  = 'm-0 p-4 font-mono text-[13px] leading-[1.65] whitespace-pre-wrap break-words'
+const typeStyles =
+  'm-0 p-4 font-mono text-[13px] leading-[1.65] whitespace-pre-wrap break-words'
 
 export function CssEditor({
   value,
@@ -41,8 +41,8 @@ export function CssEditor({
       <textarea
         ref={ref}
         value={value}
-        onChange={e => onChange(e.target.value)}
-        onScroll={e => preRef.current?.scrollTo(e.currentTarget.scrollLeft, e.currentTarget.scrollTop)}
+        onChange={(e) => onChange(e.target.value)}
+        onScroll={(e) => preRef.current?.scrollTo(e.currentTarget.scrollLeft, e.currentTarget.scrollTop)}
         placeholder={placeholder}
         aria-label="CSS input"
         spellCheck={false}

@@ -1,14 +1,15 @@
 'use client'
 
+import type { HsvaColor } from '@uiw/color-convert'
+import { hexToHsva } from '@uiw/color-convert'
 import Colorful from '@uiw/react-color-colorful'
-import { hexToHsva, type HsvaColor } from '@uiw/color-convert'
-import { useState, useMemo } from 'react'
-import { cssColorToHex } from '@/lib/colorUtils'
+import { useMemo, useState } from 'react'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { cssColorToHex } from '@/lib/colorUtils'
 
 export function ColorDot({
   colorStr,

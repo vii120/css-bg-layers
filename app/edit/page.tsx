@@ -1,5 +1,6 @@
 'use client'
 
+import type { AspectRatio } from './_components/AspectRatioPicker'
 import type { BgLayer } from '@/lib/parseCss'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Eye, EyeClosed, MoveLeft } from 'lucide-react'
@@ -12,10 +13,9 @@ import { parseCssInput, reconstructBackground } from '@/lib/parseCss'
 import { useCssStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
 import {
-  AspectRatioPicker,
   ASPECT_RATIOS,
+  AspectRatioPicker,
 } from './_components/AspectRatioPicker'
-import type { AspectRatio } from './_components/AspectRatioPicker'
 import { BackgroundColorCard } from './_components/BackgroundColorCard'
 import { LayerCard } from './_components/LayerCard'
 import { OutputCss } from './_components/OutputCss'

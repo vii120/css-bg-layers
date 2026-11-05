@@ -11,11 +11,9 @@ export function splitTopLevelCommas(value: string): string[] {
     const ch = value[i]
     if (ch === '(') {
       depth++
-    }
-    else if (ch === ')') {
+    } else if (ch === ')') {
       depth--
-    }
-    else if (ch === ',' && depth === 0) {
+    } else if (ch === ',' && depth === 0) {
       parts.push(value.slice(start, i).trim())
       start = i + 1
     }
@@ -72,8 +70,8 @@ function parseDeclarations(declarations: string): Record<string, string> {
   return props
 }
 
-export type LayerType
-  = 'linear-gradient'
+export type LayerType =
+  'linear-gradient'
   | 'radial-gradient'
   | 'conic-gradient'
   | 'repeating-linear-gradient'
@@ -169,11 +167,9 @@ function splitTopLevelSpaces(value: string): string[] {
     const ch = value[i]
     if (ch === '(') {
       depth++
-    }
-    else if (ch === ')') {
+    } else if (ch === ')') {
       depth--
-    }
-    else if (ch === ' ' && depth === 0) {
+    } else if (ch === ' ' && depth === 0) {
       const token = value.slice(start, i).trim()
       if (token)
         parts.push(token)
@@ -229,7 +225,7 @@ function looksLikeColor(token: string): boolean {
  * Tracks parenthesis depth from the first '(' to find the matching closing paren,
  * so layers like `var(--g1) var(--s) calc(1.73*var(--s))` are split correctly.
  */
-function splitLayerImageAndTrailing(raw: string): { imageValue: string, trailing: string } {
+function splitLayerImageAndTrailing(raw: string): { imageValue: string; trailing: string } {
   const firstParen = raw.indexOf('(')
   if (firstParen === -1) {
     return { imageValue: raw, trailing: '' }
@@ -239,8 +235,7 @@ function splitLayerImageAndTrailing(raw: string): { imageValue: string, trailing
   for (let i = firstParen; i < raw.length; i++) {
     if (raw[i] === '(') {
       depth++
-    }
-    else if (raw[i] === ')') {
+    } else if (raw[i] === ')') {
       depth--
       if (depth === 0) {
         const trailing = raw.slice(i + 1).trim()
@@ -324,8 +319,7 @@ export function parseCssInput(input: string): BgLayer[] | null {
         if (!hasTopLevelSpace(embeddedPosition) && looksLikeColor(embeddedPosition)) {
           resolvedColor = embeddedPosition
           embeddedPosition = undefined
-        }
-        else if (hasTopLevelSpace(embeddedPosition)) {
+        } else if (hasTopLevelSpace(embeddedPosition)) {
           // Multiple trailing tokens — check if the last one is a color
           const tokens = splitTopLevelSpaces(embeddedPosition)
           const lastToken = tokens.at(-1)

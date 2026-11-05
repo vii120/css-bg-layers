@@ -7,10 +7,10 @@ import { Eye, EyeClosed, GripVertical } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
-import { reconstructBackground } from '@/lib/parseCss'
 import { parseColorTokens } from '@/lib/colorUtils'
-import { ColorDot } from './ColorDot'
+import { reconstructBackground } from '@/lib/parseCss'
 import { cn } from '@/lib/utils'
+import { ColorDot } from './ColorDot'
 
 function buildLayerCss(
   layer: BgLayer,
@@ -20,7 +20,6 @@ function buildLayerCss(
   const bgValue = reconstructBackground([layer])
   return `div { ${customProps ? `${customProps}; ` : ''}background: ${bgValue} }`
 }
-
 
 function RawDisplay({
   value,

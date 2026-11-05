@@ -7,7 +7,7 @@ cssGrammar.patterns.push({ include: '#declarations' }, { include: '#values' })
 
 // `100%` matched as `100`: a trailing \b can't follow `%`. Boundary only for letter units.
 const numeric = cssGrammar.repository.values.patterns.find(
-  rule => rule.name === 'constant.numeric',
+  (rule) => rule.name === 'constant.numeric',
 )
 if (numeric)
   numeric.match = numeric.match.replace('(?:%|[a-zA-Z]+)?\\b', '(?:%|[a-zA-Z]+\\b)?')

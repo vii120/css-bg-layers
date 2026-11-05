@@ -6,7 +6,7 @@ declare module 'microlighter' {
 declare module 'microlighter/grammars/css.js' {
   const grammar: {
     patterns: { include: string }[]
-    repository: { values: { patterns: { name?: string, match: string }[] } }
+    repository: { values: { patterns: { name?: string; match: string }[] } }
   }
   export default grammar
 }

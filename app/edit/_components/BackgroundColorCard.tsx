@@ -5,8 +5,8 @@ import { Eye, EyeClosed } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useState } from 'react'
 import { PreviewCanvas } from '@/app/_components/PreviewCanvas'
-import { ColorDot } from './ColorDot'
 import { cn } from '@/lib/utils'
+import { ColorDot } from './ColorDot'
 
 interface Props {
   layer: BgLayer
@@ -55,7 +55,7 @@ export function BackgroundColorCard({ layer, colorHidden, onToggleVisibility, on
           <input
             className="select-text font-mono text-xs text-ink w-full bg-transparent outline-none rounded px-1.5 py-1 -mx-1.5 hover:bg-surface focus:bg-surface focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors disabled:pointer-events-none"
             value={layer.color!}
-            onChange={e => onUpdate('color', e.target.value)}
+            onChange={(e) => onUpdate('color', e.target.value)}
             onFocus={() => setEditing(true)}
             onBlur={() => setEditing(false)}
             spellCheck={false}

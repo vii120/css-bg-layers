@@ -5,8 +5,8 @@ import { ChevronDown } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { parseColorTokens } from '@/lib/colorUtils'
-import { ColorDot } from './ColorDot'
 import { cn } from '@/lib/utils'
+import { ColorDot } from './ColorDot'
 
 interface Props {
   cssVars: { name: string; value: string }[]
@@ -22,7 +22,7 @@ export function VariablesPanel({ cssVars, onUpdate }: Props) {
       <button
         onClick={() => {
           sendGAEvent('event', 'toggle_variables_panel')
-          setOpen(v => !v)
+          setOpen((v) => !v)
         }}
         className="flex items-center gap-1.5 cursor-pointer pl-3 border-l-3 border-accent py-0.5"
       >
@@ -66,7 +66,7 @@ export function VariablesPanel({ cssVars, onUpdate }: Props) {
                       <input
                         className="select-text text-ink w-full bg-transparent outline-none rounded px-1.5 py-0.5 -mx-1.5 hover:bg-canvas focus:bg-canvas focus-visible:ring-1 focus-visible:ring-accent/40 transition-colors"
                         value={v.value}
-                        onChange={e => onUpdate(v.name, e.target.value)}
+                        onChange={(e) => onUpdate(v.name, e.target.value)}
                         onFocus={() => setEditingVar(v.name)}
                         onBlur={() => setEditingVar(null)}
                         spellCheck={false}
