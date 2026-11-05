@@ -30,16 +30,14 @@ export function ColorDot({
         if (open) setHsva(hexToHsva(cssColorToHex(colorStr)))
       }}
     >
-      <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          title={colorStr}
-          style={{
-            background: `linear-gradient(${hex}, ${hex}), repeating-conic-gradient(var(--color-surface) 0% 25%, transparent 0% 50%) 0 0 / 5px 5px`,
-          }}
-          className="w-2.5 aspect-square rounded-[2px] border border-black/20 cursor-pointer inline-block align-middle mr-1 relative -top-px shrink-0 hover:scale-125 transition-transform duration-100"
-        />
-      </PopoverTrigger>
+      <PopoverTrigger
+        onClick={(e) => e.stopPropagation()}
+        title={colorStr}
+        style={{
+          background: `linear-gradient(${hex}, ${hex}), repeating-conic-gradient(var(--color-surface) 0% 25%, transparent 0% 50%) 0 0 / 5px 5px`,
+        }}
+        className="w-2.5 aspect-square rounded-[2px] border border-black/20 cursor-pointer inline-block align-middle mr-1 relative -top-px shrink-0 hover:scale-125 transition-transform duration-100"
+      />
       <PopoverContent
         className="p-0 w-auto border-none shadow-xl"
         onClick={(e) => e.stopPropagation()}

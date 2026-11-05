@@ -75,17 +75,14 @@ export function OutputCss({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button
-          onClick={handleOpen}
-          className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer flex items-center gap-2"
-        >
-          <Braces size={14} />
-          View CSS
-        </button>
+      <DialogTrigger
+        onClick={handleOpen}
+        className="text-xs px-3 py-1.5 rounded border border-line bg-canvas hover:bg-surface transition-colors text-ink-muted cursor-pointer flex items-center gap-2"
+      >
+        <Braces size={14} />
+        View CSS
       </DialogTrigger>
       <DialogContent
-        aria-describedby={undefined}
         className="md:max-w-2xl bg-canvas border-line"
       >
         <DialogHeader>
