@@ -3,11 +3,11 @@
 @import "shadcn/tailwind.css";
 
 :root {
-  --bg: #faf9f7;
-  --surface: #f2f0ec;
-  --border: #e0dbd4;
-  --text: #1c1a17;
-  --text-muted: #8a837b;
+  --bg: #f9f9f9;
+  --surface: #f0f0f0;
+  --border: #dcdcdb;
+  --text: #1a1a1a;
+  --text-muted: #858483;
   --accent: #5c6dc5;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -91,7 +91,7 @@
 }
 
 ::selection {
-  background: #e4e0da;
+  background: #e1e0e0;
 }
 
 body {
@@ -272,10 +272,10 @@ body {
   color: #9333ea;
 }
 ::highlight(comment) {
-  color: #a8a29e;
+  color: #a4a3a3;
   font-style: italic;
 }
 ::highlight(operator),
 ::highlight(punctuation) {
-  color: #78716c;
+  color: #737272;
 }

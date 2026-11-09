@@ -16,13 +16,16 @@ export const EXAMPLES = [
   {
     id: 'cubes',
     label: '3D cubes',
-    source: { name: 'CSS Pattern', url: 'https://css-pattern.com/overlapping-cubes/' },
+    source: {
+      name: 'CSS Pattern',
+      url: 'https://css-pattern.com/overlapping-cubes/',
+    },
     note: 'with CSS variables',
     css: `div {
   --s: 50px;
-  --c1: #f1f7ff;
-  --c2: #dde9fa;
-  --c3: #c9dcf4;
+  --c1: #e2eaf5;
+  --c2: #ccdcf4;
+  --c3: #aec8e7;
 
   background:
     conic-gradient(             at calc(250%/3) calc(100%/3), var(--c3) 0 120deg, #0000 0),
@@ -38,13 +41,16 @@ export const EXAMPLES = [
   {
     id: 'zigzag',
     label: 'ZigZag',
-    source: { name: 'MagicPattern', url: 'https://www.magicpattern.design/tools/css-backgrounds' },
+    source: {
+      name: 'MagicPattern',
+      url: 'https://www.magicpattern.design/tools/css-backgrounds',
+    },
     css: `div {
   background-image:
-    linear-gradient(135deg, #f2c8be 25%, transparent 25%),
-    linear-gradient(225deg, #f2c8be 25%, transparent 25%),
-    linear-gradient(45deg, #f2c8be 25%, transparent 25%),
-    linear-gradient(315deg, #f2c8be 25%, #f7e7de 25%);
+    linear-gradient(135deg, #f0b6a9 25%, transparent 25%),
+    linear-gradient(225deg, #f0b6a9 25%, transparent 25%),
+    linear-gradient(45deg, #f0b6a9 25%, transparent 25%),
+    linear-gradient(315deg, #f0b6a9 25%, #efd8cc 25%);
   background-position: 10px 0, 10px 0, 0 0, 0 0;
   background-size: 20px 20px;
   background-repeat: repeat;

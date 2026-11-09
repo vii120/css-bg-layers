@@ -52,7 +52,7 @@ export function CssEditor({
           typeStyles,
           'absolute inset-0 resize-none outline-none',
           'bg-transparent text-transparent caret-[#3b52d4]',
-          'placeholder:text-[#b0a89e] selection:bg-[#3b52d4]/15',
+          'placeholder:text-[#aaa9a8] selection:bg-[#3b52d4]/15',
           // Hidden so the textarea's content width matches the <pre> and lines wrap alike.
           '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
         )}

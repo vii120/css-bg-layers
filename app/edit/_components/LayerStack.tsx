@@ -98,7 +98,7 @@ export function LayerStack({
                 'absolute inset-0 rounded-md outline-none transition-[transform,background-color,box-shadow] motion-reduce:transition-none',
                 is3d
                   // Outline shifts toward the accent on hover/focus; shadow is quick so hover feels instant
-                  ? 'cursor-pointer bg-canvas shadow-[0_0_0_1px_var(--border),0_8px_24px_-12px_rgb(28_26_23/0.08)] hover:shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_40%,var(--border)),0_8px_24px_-12px_rgb(28_26_23/0.08)] focus-visible:shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_40%,var(--border)),0_8px_24px_-12px_rgb(28_26_23/0.08)] [transition-duration:700ms,700ms,150ms]'
+                  ? 'cursor-pointer bg-canvas shadow-[0_0_0_1px_var(--border),0_8px_24px_-12px_rgb(26_26_26/0.08)] hover:shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_40%,var(--border)),0_8px_24px_-12px_rgb(26_26_26/0.08)] focus-visible:shadow-[0_0_0_1px_color-mix(in_oklch,var(--accent)_40%,var(--border)),0_8px_24px_-12px_rgb(26_26_26/0.08)] [transition-duration:700ms,700ms,150ms]'
                   // Backings hold briefly, then fade over 500ms, ending as the stack lands (700ms)
                   : 'bg-transparent shadow-none [transition-duration:700ms,500ms,500ms]',
               )}
