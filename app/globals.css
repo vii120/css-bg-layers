@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 :root {
   --bg: #f9f9f9;
@@ -90,10 +90,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-::selection {
-  background: #e1e0e0;
-}
-
 body {
   background: var(--bg);
   color: var(--text);
@@ -101,6 +97,9 @@ body {
 }
 
 @layer base {
+  ::selection {
+    background: #e1e0e0;
+  }
   * {
     @apply border-border outline-ring/50;
   }
@@ -113,9 +112,9 @@ body {
 }
 
 @utility hit-area-debug {
-    position: relative;
+  position: relative;
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -130,9 +129,9 @@ body {
 }
 
 @utility hit-area {
-    position: relative;
+  position: relative;
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -143,13 +142,17 @@ body {
 }
 
 @utility hit-area-* {
-    position: relative;
-    --hit-area-t: --spacing(--value(number) * -1); --hit-area-t: calc(--value([*]) * -1);
-    --hit-area-b: --spacing(--value(number) * -1); --hit-area-b: calc(--value([*]) * -1);
-    --hit-area-l: --spacing(--value(number) * -1); --hit-area-l: calc(--value([*]) * -1);
-    --hit-area-r: --spacing(--value(number) * -1); --hit-area-r: calc(--value([*]) * -1);
+  position: relative;
+  --hit-area-t: --spacing(--value(number) * -1);
+  --hit-area-t: calc(--value([*]) * -1);
+  --hit-area-b: --spacing(--value(number) * -1);
+  --hit-area-b: calc(--value([*]) * -1);
+  --hit-area-l: --spacing(--value(number) * -1);
+  --hit-area-l: calc(--value([*]) * -1);
+  --hit-area-r: --spacing(--value(number) * -1);
+  --hit-area-r: calc(--value([*]) * -1);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -160,10 +163,11 @@ body {
 }
 
 @utility hit-area-l-* {
-    position: relative;
-    --hit-area-l: --spacing(--value(number) * -1); --hit-area-l: calc(--value([*]) * -1);
+  position: relative;
+  --hit-area-l: --spacing(--value(number) * -1);
+  --hit-area-l: calc(--value([*]) * -1);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -174,10 +178,11 @@ body {
 }
 
 @utility hit-area-r-* {
-    position: relative;
-    --hit-area-r: --spacing(--value(number) * -1); --hit-area-r: calc(--value([*]) * -1);
+  position: relative;
+  --hit-area-r: --spacing(--value(number) * -1);
+  --hit-area-r: calc(--value([*]) * -1);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -188,10 +193,11 @@ body {
 }
 
 @utility hit-area-t-* {
-    position: relative;
-    --hit-area-t: --spacing(--value(number) * -1); --hit-area-t: calc(--value([*]) * -1);
+  position: relative;
+  --hit-area-t: --spacing(--value(number) * -1);
+  --hit-area-t: calc(--value([*]) * -1);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -202,10 +208,11 @@ body {
 }
 
 @utility hit-area-b-* {
-    position: relative;
-    --hit-area-b: --spacing(--value(number) * -1); --hit-area-b: calc(--value([*]) * -1);
+  position: relative;
+  --hit-area-b: --spacing(--value(number) * -1);
+  --hit-area-b: calc(--value([*]) * -1);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -216,11 +223,13 @@ body {
 }
 
 @utility hit-area-x-* {
-    position: relative;
-    --hit-area-l: --spacing(--value(number) * -1); --hit-area-l: calc(--value([*]) * -1);
-    --hit-area-r: --spacing(--value(number) * -1); --hit-area-r: calc(--value([*]) * -1);
+  position: relative;
+  --hit-area-l: --spacing(--value(number) * -1);
+  --hit-area-l: calc(--value([*]) * -1);
+  --hit-area-r: --spacing(--value(number) * -1);
+  --hit-area-r: calc(--value([*]) * -1);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
@@ -231,11 +240,13 @@ body {
 }
 
 @utility hit-area-y-* {
-    position: relative;
-    --hit-area-t: --spacing(--value(number) * -1); --hit-area-t: calc(--value([*]) * -1);
-    --hit-area-b: --spacing(--value(number) * -1); --hit-area-b: calc(--value([*]) * -1);
+  position: relative;
+  --hit-area-t: --spacing(--value(number) * -1);
+  --hit-area-t: calc(--value([*]) * -1);
+  --hit-area-b: --spacing(--value(number) * -1);
+  --hit-area-b: calc(--value([*]) * -1);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: var(--hit-area-t, 0px);
     right: var(--hit-area-r, 0px);
